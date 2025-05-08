@@ -37,21 +37,6 @@
   margin-top: 0;
 }
 
-.auth-controls input {
-  display: block;
-  margin: 10px 0;
-}
-
-.auth-controls button {
-  margin: 5px;
-}
-
-#loggedInUser {
-  display: inline-block;
-  margin-right: 10px;
-  font-weight: bold;
-}
-
     .forge-slots, .fuel-slots {
       display: flex;
       flex-direction: column;
@@ -743,16 +728,11 @@
         <input type="text" id="codeInput" placeholder="Enter code">
         <button onclick="redeemCode()">Redeem</button>
       </div>
-      <div class="auth-controls" id="authControls">
-        <div id="loginForm">
-          <input type="text" id="username" placeholder="Username">
-          <input type="password" id="password" placeholder="Password">
-          <button onclick="login()">Login</button>
-          <button onclick="register()">Register</button>
-        </div>
-        <div id="logoutForm" style="display: none;">
-          <span id="loggedInUser"></span>
-          <button onclick="logout()">Logout</button>
+      <div class="save-load">
+        <textarea id="saveCode" placeholder="Save/load code here"></textarea>
+        <div style="display: flex; gap: 10px;">
+          <button onclick="saveGame(true)">Save Game</button>
+          <button onclick="loadGame()">Load Game</button>
         </div>
       </div>
       <div class="forgable-list">
@@ -925,8 +905,63 @@
       // ??? Items (0% total chance, 1 items)
       { name: "Developer", rarity: "???", emoji: "😈", cps: 415, chance: 0,description: "Syntax Error: Code Not Found" }
     ];
+    function generateChecksum(state) {
+  const cleanState = {
+    coins: Math.floor(state.coins || 0),
+    spinCost: Math.floor(state.spinCost || 0),
+    inventory: state.inventory ? state.inventory.map(item => ({
+      name: item.name,
+      rarity: item.rarity,
+      cps: Math.floor(item.cps),
+      emoji: item.emoji,
+      description: item.description
+    })) : [],
+    equipped: state.equipped ? state.equipped.map(item => item ? ({
+      name: item.name,
+      rarity: item.rarity,
+      cps: Math.floor(item.cps),
+      emoji: item.emoji,
+      description: item.description
+    }) : null) : [null, null, null, null, null],
+    forgeSlots: state.forgeSlots ? state.forgeSlots.map(item => item ? ({
+      name: item.name,
+      rarity: item.rarity,
+      cps: Math.floor(item.cps),
+      emoji: item.emoji,
+      description: item.description
+    }) : null) : [null, null, null],
+    altarTarget: state.altarTarget ? {
+      name: state.altarTarget.name,
+      rarity: state.altarTarget.rarity,
+      cps: Math.floor(state.altarTarget.cps),
+      emoji: state.altarTarget.emoji,
+      description: state.altarTarget.description
+    } : null,
+    altarFuel: state.altarFuel ? state.altarFuel.map(item => item ? ({
+      name: item.name,
+      rarity: item.rarity,
+      cps: Math.floor(item.cps),
+      emoji: item.emoji,
+      description: item.description
+    }) : null) : [null, null, null, null, null],
+    redeemedCodes: state.redeemedCodes || [],
+    changelog: state.changelog || []
+  };
 
-    function validateState(state) {
+  const coinSum = cleanState.coins;
+  const spinCostSum = cleanState.spinCost;
+  const inventoryCount = cleanState.inventory.length;
+  const equippedCount = cleanState.equipped.filter(item => item !== null).length;
+  const forgeCount = cleanState.forgeSlots.filter(item => item !== null).length;
+  const altarTargetCount = cleanState.altarTarget ? 1 : 0;
+  const altarFuelCount = cleanState.altarFuel.filter(item => item !== null).length;
+  const changelogCount = cleanState.changelog.length;
+
+  const sum = coinSum + spinCostSum + inventoryCount + equippedCount + forgeCount + altarTargetCount + altarFuelCount + changelogCount;
+  return sum % 65536;
+}
+
+function validateState(state) {
   if (!state || typeof state !== 'object') {
     console.error('Validation failed: State is not an object');
     return false;
@@ -1139,8 +1174,7 @@
   return true;
 }
 
-async function saveGame() {
-  if (!localStorage.getItem('token')) return;
+function saveGame(showCode = false) {
   try {
     const state = {
       coins: Math.floor(coins),
@@ -1183,18 +1217,95 @@ async function saveGame() {
       redeemedCodes: Array.from(redeemedCodes),
       changelog
     };
-    const response = await fetch('/api/auth/save', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      },
-      body: JSON.stringify(state)
-    });
-    if (!response.ok) throw new Error('Failed to save game');
+    const checksum = generateChecksum(state);
+    const json = JSON.stringify(state);
+    const encoded = btoa(encodeURIComponent(json)) + '.' + checksum;
+    localStorage.setItem('lootSpinState', encoded);
+    if (showCode) {
+      const saveCodeEl = document.getElementById('saveCode');
+      saveCodeEl.value = encoded;
+      alert('Game saved! Copy the code from the textarea for backup.');
+    }
   } catch (e) {
     console.error('Save failed:', e);
     alert('Failed to save game. Please try again.');
+  }
+}
+
+function loadGame() {
+  const saveCodeEl = document.getElementById('saveCode');
+  let encoded = saveCodeEl.value.trim();
+  if (!encoded) {
+    encoded = localStorage.getItem('lootSpinState') || '';
+  }
+  if (!encoded) {
+    alert('No save code provided or saved game found!');
+    return;
+  }
+
+  try {
+    const [data, checksum] = encoded.split('.');
+    if (!data || !checksum) {
+      console.error('Invalid save code format: Missing data or checksum');
+      throw new Error('Invalid save code format');
+    }
+    const json = decodeURIComponent(atob(data));
+    const state = JSON.parse(json);
+    const expectedChecksum = generateChecksum(state);
+
+    if (parseInt(checksum) !== expectedChecksum) {
+      console.error('Checksum mismatch:', { 
+        received: checksum, 
+        expected: expectedChecksum, 
+        coins: state.coins, 
+        spinCost: state.spinCost, 
+        inventoryLength: state.inventory.length,
+        equippedCount: state.equipped.filter(item => item !== null).length,
+        forgeCount: state.forgeSlots.filter(item => item !== null).length,
+        altarTarget: state.altarTarget ? 1 : 0,
+        altarFuelCount: state.altarFuel.filter(item => item !== null).length,
+        changelogCount: state.changelog.length
+      });
+      alert('Invalid save code: Checksum mismatch! Check console for details.');
+      return;
+    }
+
+    if (!validateState(state)) {
+      console.error('State validation failed:', state);
+      alert('Invalid save code: Data is corrupted or tampered! Check console for details.');
+      return;
+    }
+
+    coins = state.coins;
+    spinCost = state.spinCost;
+    inventory.length = 0;
+    inventory.push(...state.inventory);
+    equipped.length = 0;
+    equipped.push(...state.equipped);
+    forgeSlots.length = 0;
+    forgeSlots.push(...state.forgeSlots);
+    altarTarget = state.altarTarget;
+    altarFuel.length = 0;
+    altarFuel.push(...state.altarFuel);
+    redeemedCodes.clear();
+    state.redeemedCodes.forEach(code => redeemedCodes.add(code));
+    changelog.length = 0;
+    changelog.push(...state.changelog);
+
+    updateInventory();
+    updateSpinButton();
+    updateForgeSlots();
+    updateSlots();
+    updateForgableList();
+    updateAltarTarget();
+    updateFuelSlots();
+    updateFuelCardList();
+    updateChangelog();
+    saveCodeEl.value = '';
+    alert('Game loaded successfully!');
+  } catch (e) {
+    console.error('Load failed:', e.message, e.stack);
+    alert('Failed to load game: Invalid save code! Check console for details.');
   }
 }
 
@@ -1974,7 +2085,8 @@ function upgradeCard() {
   }
 
   const totalFuelCPS = filledFuelSlots.reduce((sum, item) => sum + item.cps, 0);
-  const newCPS = Math.min(altarTarget.cps + totalFuelCPS, 1000);
+  const cpsIncrease = Math.floor(totalFuelCPS * 0.5);
+  const newCPS = Math.min(altarTarget.cps + cpsIncrease, 1000);
   altarTarget.cps = newCPS;
 
   inventory.push({ ...altarTarget });
@@ -2067,196 +2179,4 @@ function redeemCode() {
 
   codeInput.value = '';
 }
-let token = localStorage.getItem('token');
-
-async function login() {
-  const username = document.getElementById('username').value.trim();
-  const password = document.getElementById('password').value;
-  if (!username || !password) {
-    alert('Please enter both username and password');
-    return;
-  }
-  try {
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.message || 'Login failed');
-    localStorage.setItem('token', data.token);
-    token = data.token;
-    document.getElementById('loginForm').style.display = 'none';
-    document.getElementById('logoutForm').style.display = 'block';
-    document.getElementById('loggedInUser').textContent = `Logged in as ${username}`;
-    if (data.state && validateState(data.state)) {
-      coins = data.state.coins;
-      spinCost = data.state.spinCost;
-      inventory.length = 0;
-      inventory.push(...data.state.inventory);
-      equipped.length = 0;
-      equipped.push(...data.state.equipped);
-      forgeSlots.length = 0;
-      forgeSlots.push(...data.state.forgeSlots);
-      altarTarget = data.state.altarTarget;
-      altarFuel.length = 0;
-      altarFuel.push(...data.state.altarFuel);
-      redeemedCodes.clear();
-      data.state.redeemedCodes.forEach(code => redeemedCodes.add(code));
-      changelog.length = 0;
-      changelog.push(...data.state.changelog);
-      updateInventory();
-      updateSpinButton();
-      updateForgeSlots();
-      updateSlots();
-      updateForgableList();
-      updateAltarTarget();
-      updateFuelSlots();
-      updateFuelCardList();
-      updateChangelog();
-    }
-    alert('Logged in successfully!');
-  } catch (e) {
-    console.error('Login failed:', e);
-    alert(`Login failed: ${e.message}`);
-  }
-}
-
-async function register() {
-  const username = document.getElementById('username').value.trim();
-  const password = document.getElementById('password').value;
-  if (!username || !password) {
-    alert('Please enter both username and password');
-    return;
-  }
-  try {
-    const response = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.message || 'Registration failed');
-    alert('Registration successful! Please login.');
-  } catch (e) {
-    console.error('Registration failed:', e);
-    alert(`Registration failed: ${e.message}`);
-  }
-}
-
-async function logout() {
-  try {
-    await saveGame();
-    const response = await fetch('/api/auth/logout', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    if (!response.ok) throw new Error('Logout failed');
-    localStorage.removeItem('token');
-    token = null;
-    document.getElementById('loginForm').style.display = 'block';
-    document.getElementById('logoutForm').style.display = 'none';
-    document.getElementById('username').value = '';
-    document.getElementById('password').value = '';
-    resetGame();
-    alert('Logged out successfully!');
-  } catch (e) {
-    console.error('Logout failed:', e);
-    alert(`Logout failed: ${e.message}`);
-  }
-}
-
-function resetGame() {
-  coins = 0;
-  spinCost = 10;
-  inventory.length = 0;
-  equipped.length = 0;
-  equipped.push(null, null, null, null, null);
-  forgeSlots.length = 0;
-  forgeSlots.push(null, null, null);
-  altarTarget = null;
-  altarFuel.length = 0;
-  altarFuel.push(null, null, null, null, null);
-  redeemedCodes.clear();
-  changelog.length = 0;
-  updateInventory();
-  updateSpinButton();
-  updateForgeSlots();
-  updateSlots();
-  updateForgableList();
-  updateAltarTarget();
-  updateFuelSlots();
-  updateFuelCardList();
-  updateChangelog();
-}
-
-// Auto-save after key actions
-function wrapWithSave(fn) {
-  return async (...args) => {
-    const result = await fn(...args);
-    await saveGame();
-    return result;
-  };
-}
-
-// Wrap functions that modify state
-const originalForgeCards = forgeCards;
-const originalUpgradeCard = upgradeCard;
-const originalRedeemCode = redeemCode;
-const originalAddChangelogEntry = addChangelogEntry;
-
-forgeCards = wrapWithSave(originalForgeCards);
-upgradeCard = wrapWithSave(originalUpgradeCard);
-redeemCode = wrapWithSave(originalRedeemCode);
-addChangelogEntry = wrapWithSave(originalAddChangelogEntry);
-
-// Check login status on page load
-window.onload = async () => {
-  if (token) {
-    try {
-      const response = await fetch('/api/auth/verify', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await response.json();
-      if (response.ok && data.state && validateState(data.state)) {
-        document.getElementById('loginForm').style.display = 'none';
-        document.getElementById('logoutForm').style.display = 'block';
-        document.getElementById('loggedInUser').textContent = `Logged in as ${data.username}`;
-        coins = data.state.coins;
-        spinCost = data.state.spinCost;
-        inventory.length = 0;
-        inventory.push(...data.state.inventory);
-        equipped.length = 0;
-        equipped.push(...data.state.equipped);
-        forgeSlots.length = 0;
-        forgeSlots.push(...data.state.forgeSlots);
-        altarTarget = data.state.altarTarget;
-        altarFuel.length = 0;
-        altarFuel.push(...data.state.altarFuel);
-        redeemedCodes.clear();
-        data.state.redeemedCodes.forEach(code => redeemedCodes.add(code));
-        changelog.length = 0;
-        changelog.push(...data.state.changelog);
-        updateInventory();
-        updateSpinButton();
-        updateForgeSlots();
-        updateSlots();
-        updateForgableList();
-        updateAltarTarget();
-        updateFuelSlots();
-        updateFuelCardList();
-        updateChangelog();
-      } else {
-        localStorage.removeItem('token');
-        token = null;
-        resetGame();
-      }
-    } catch (e) {
-      console.error('Token verification failed:', e);
-      localStorage.removeItem('token');
-      token = null;
-      resetGame();
-    }
-  }
-};
 </script>
