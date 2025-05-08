@@ -268,6 +268,12 @@
       box-shadow: 0 0 25px rgba(220, 20, 60, 0.8);
     }
 
+    .Developer { 
+      background: #ff07c5;
+      color: #fff;
+      box-shadow: 0 0 25px rgba(255, 56, 175, 0.8);
+    }
+
     /* Inventory and list item variants */
     .Common-li { background: rgba(189, 195, 199, 0.7); }
     .Uncommon-li { background: rgba(46, 204, 113, 0.7); }
@@ -278,6 +284,7 @@
     .Mythical-li { background: rgba(255, 105, 180, 0.7); }
     .Celestial-li { background: rgba(0, 247, 255, 0.7); }
     .Special-li { background: rgba(220, 20, 60, 0.7); }
+    .Developer-li { background: rgba(255, 56, 175, 0.8)}
 
     .inventory, .forgable-list, .fuel-card-list, .changelog {
       margin-top: 20px;
@@ -414,6 +421,7 @@
 .forge-slot.Mythical { background: #ff69b4; color: #fff; }
 .forge-slot.Celestial { background: #00f7ff; color: #000; }
 .forge-slot.Special { background: #dc143c; color: #fff; }
+.forge-slot.Developer { background: #ff07c5; color: #fff;}
 
 .target-slot.Common { background: #bdc3c7; color: #2c3e50; }
 .target-slot.Uncommon { background: #2ecc71; color: #fff; }
@@ -424,6 +432,7 @@
 .target-slot.Mythical { background: #ff69b4; color: #fff; }
 .target-slot.Celestial { background: #00f7ff; color: #000; }
 .target-slot.Special { background: #dc143c; color: #fff; }
+.target-slot.Developer { background: #ff07c5; color: #fff; }
 
 .fuel-slot.Common { background: #bdc3c7; color: #2c3e50; }
 .fuel-slot.Uncommon { background: #2ecc71; color: #fff; }
@@ -434,6 +443,7 @@
 .fuel-slot.Mythical { background: #ff69b4; color: #fff; }
 .fuel-slot.Celestial { background: #00f7ff; color: #000; }
 .fuel-slot.Special { background: #dc143c; color: #fff; }
+.fuel-slot.Developer { background: #ff07c5; color: #fff; }
 
 .forge-slot, .target-slot, .fuel-slot, .slot-content {
   background: none !important;
@@ -467,6 +477,9 @@
 .forge-slot.Special, .target-slot.Special, .fuel-slot.Special, .slot-content.Special {
   background: #dc143c !important; color: #fff !important;
 }
+.forge-slot.Developer, .target-slot.Developer, .fuel-slot.Developer, .slot-content.Developer {
+  background: #ff07c5 !important; color: #fff !important;
+}
 
 #batchRarity, #batchRarity option {
   color: #000 !important;
@@ -480,6 +493,7 @@
 #batchRarity option[value="Mythical"] { background: #ff69b4 !important; }
 #batchRarity option[value="Celestial"] { background: #00f7ff !important; }
 #batchRarity option[value="Special"] { background: #dc143c !important; }
+#batchRarity option[value="???"] { background: #ff07c5 !important; }
 
 #batchCPS {
   padding: 6px;
@@ -581,6 +595,12 @@
     .special-title.Special {
       color: #dc143c;
       text-shadow: 0 0 8px rgba(0, 0, 0, 0.8), 0 0 12px rgba(220, 20, 60, 0.6);
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .special-title.Developer {
+      color: #ff07c5;
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.8), 0 0 12px rgba(255, 56, 175, 0.8);
       background: rgba(0, 0, 0, 0.3);
     }
 
@@ -760,6 +780,7 @@
           <option value="Mythical">Mythical</option>
           <option value="Celestial">Celestial</option>
           <option value="Special">Special</option>
+          <option value="???">Developer</option>
         </select>
         <input type="number" id="batchCPS" min="0" placeholder="Enter CPS (0-1000)" title="Enter a CPS value between 0 and 1000">
         <button onclick="batchSelectFuelCards()">Select</button>
@@ -788,6 +809,7 @@
     const redeemedCodes = new Set();
     const changelog = [];
     const rarityOrder = { 
+      Developer: 10,
       Special: 9, 
       Celestial: 8, 
       Mythical: 7, 
@@ -800,7 +822,7 @@
     };
     const rarityProgression = [
       'Common', 'Uncommon', 'Rare', 'SuperRare', 
-      'Epic', 'Legendary', 'Mythical', 'Celestial'
+      'Epic', 'Legendary', 'Mythical', 'Celestial', 'Special'
     ];
 
     const items = [
@@ -870,7 +892,7 @@
       { name: "Deathly Hallows", rarity: "Celestial", emoji: "🔺", cps: 50, chance: 0.003, description: "Mastery over death itself." },
       { name: "Hogwarts Castle", rarity: "Celestial", emoji: "🏰", cps: 60, chance: 0.002, description: "The magical heart of the wizarding world." },
 
-      // Special Items (0.4% total chance, 5 items)
+      // Special Items (0.4% total chance, 8 items)
       { name: "Harry’s Scar", rarity: "Special", emoji: "⚡️", cps: 70, chance: 0.0015, description: "A mark of survival and connection to Voldemort." },
       { name: "Dumbledore’s Army", rarity: "Special", emoji: "🪖", cps: 65, chance: 0.001, description: "A rebellious group of brave students." },
       { name: "Snitch", rarity: "Special", emoji: "🏐", cps: 60, chance: 0.001, description: "The elusive prize of Quidditch." },
@@ -878,7 +900,10 @@
       { name: "Professor McGonagall", rarity: "Special", emoji: "🧙‍♀️", cps: 50, chance: 0, description: "A strict but fair Transfiguration teacher." },
       { name: "Ella", rarity: "Special", emoji: "🦖", cps: 50, chance: 0, description: "Rawr..." },
       { name: "Nirvi", rarity: "Special", emoji: "🐒", cps: 40, chance: 0, description: "A peculiar monkey." },
-      { name: "Matthew Tan", rarity: "Special", emoji: "🤯", cps: 45, chance: 0,description: "Thinks he's smart." }
+      { name: "Matthew Tan", rarity: "Special", emoji: "🤯", cps: 45, chance: 0,description: "Thinks he's smart." },
+
+      // ??? Items (0% total chance, 1 items)
+      { name: "Developer", rarity: "???", emoji: "😈", cps: 415, chance: 0,description: "Syntax Error: Code Not Found" }
     ];
 
     function generateChecksum(state) {
@@ -1177,7 +1202,7 @@ function collectCoins() {
         showResult(selectedItem);
         updateInventory();
         
-        if (selectedItem.rarity === "Celestial" || selectedItem.rarity === "Special") {
+        if (selectedItem.rarity === "Celestial" || selectedItem.rarity === "Special" || selectedItem.rarity === "???") {
           showSpecialMessage(selectedItem);
         }
       }
@@ -1207,7 +1232,8 @@ function collectCoins() {
     function createConfetti(rarity) {
       const colorMap = {
         Celestial: ['#00b7eb', '#0097c7', '#e6f7ff'],
-        Special: ['#dc143c', '#ff4500', '#ffd700']
+        Special: ['#dc143c', '#ff4500', '#ffd700'],
+        Developer:['#ff07c5', '#ff00e6', '#fc44f0']
       };
       const colors = colorMap[rarity] || ['#ff0000', '#ff4500', '#ffd700', '#ffffff'];
       const confettiContainer = document.getElementById('confettiContainer');
@@ -1295,7 +1321,7 @@ function collectCoins() {
       
       const itemCounts = {};
       inventory.forEach(item => {
-        if (item.rarity !== "Special") {
+        if (item.rarity !== "???" || item.rarity !== "Special") {
           const key = `${item.name}|${item.rarity}`;
           if (!itemCounts[key]) {
             itemCounts[key] = { count: 0, item: item };
@@ -1629,8 +1655,11 @@ function placeItemInForgeSlot(slotIndex) {
       }
 
       const baseItem = forgeSlots[0];
-      if (baseItem.rarity === "Special") {
+      if (baseItem.rarity === "???") {
         alert("Special items cannot be forged!");
+        return;
+      } else if (baseItem.rarity === "???") {
+        alert("Developer items cannot be forged!")
         return;
       }
 
@@ -1934,6 +1963,16 @@ function redeemCode() {
       showSpecialMessage(idiot);
       saveGame();
       alert('Code redeemed! Matthew Tan added to inventory.');
+    }
+  } else if (code == 'keybug048') {
+    const developer = items.find(item => item.name === "Developer");
+    if (developer) {
+      inventory.push({...developer});
+      redeemedCodes.add(encodedCode);
+      updateInventory();
+      showSpecialMessage(developer);
+      saveGame();
+      alert('Code redeemed! ??? added to inventory.');
     }
   } else if (code === 'keybug02') {
     addChangelogEntry();
