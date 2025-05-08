@@ -23,19 +23,34 @@
       position: relative;
     }
 
-    .ascension-shop, .upgrade-altar {
-      width: 250px;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 20px;
-      border-radius: 20px;
-      box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
-      text-align: center;
-    }
+    .forge, .upgrade-altar {
+  width: 250px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+  text-align: center;
+}
 
-    .ascension-shop h2, .upgrade-altar h2 {
-      font-size: 1.8em;
-      margin-top: 0;
-    }
+.forge h2, .upgrade-altar h2 {
+  font-size: 1.8em;
+  margin-top: 0;
+}
+
+.auth-controls input {
+  display: block;
+  margin: 10px 0;
+}
+
+.auth-controls button {
+  margin: 5px;
+}
+
+#loggedInUser {
+  display: inline-block;
+  margin-right: 10px;
+  font-weight: bold;
+}
 
     .forge-slots, .fuel-slots {
       display: flex;
@@ -716,8 +731,8 @@
 <body>
   <div class="confetti-container" id="confettiContainer"></div>
   <div class="container">
-    <div class="ascension-shop">
-      <h2>🔮 Ascension Shop</h2>
+    <div class="forge">
+      <h2>🔮 The Forge</h2>
       <div class="forge-slots" id="forgeSlots">
         <div class="forge-slot" data-slot="0">Forge Slot 1</div>
         <div class="forge-slot" data-slot="1">Forge Slot 2</div>
@@ -728,11 +743,16 @@
         <input type="text" id="codeInput" placeholder="Enter code">
         <button onclick="redeemCode()">Redeem</button>
       </div>
-      <div class="save-load">
-        <textarea id="saveCode" placeholder="Save/load code here"></textarea>
-        <div style="display: flex; gap: 10px;">
-          <button onclick="saveGame(true)">Save Game</button>
-          <button onclick="loadGame()">Load Game</button>
+      <div class="auth-controls" id="authControls">
+        <div id="loginForm">
+          <input type="text" id="username" placeholder="Username">
+          <input type="password" id="password" placeholder="Password">
+          <button onclick="login()">Login</button>
+          <button onclick="register()">Register</button>
+        </div>
+        <div id="logoutForm" style="display: none;">
+          <span id="loggedInUser"></span>
+          <button onclick="logout()">Logout</button>
         </div>
       </div>
       <div class="forgable-list">
@@ -906,207 +926,277 @@
       { name: "Developer", rarity: "???", emoji: "😈", cps: 415, chance: 0,description: "Syntax Error: Code Not Found" }
     ];
 
-    function generateChecksum(state) {
-      const coinSum = state.coins || 0;
-      const spinCostSum = state.spinCost || 0;
-      const inventoryCount = state.inventory ? state.inventory.length : 0;
-      const equippedCount = state.equipped ? state.equipped.filter(item => item !== null).length : 0;
-      const forgeCount = state.forgeSlots ? state.forgeSlots.filter(item => item !== null).length : 0;
-      const altarTargetCount = state.altarTarget ? 1 : 0;
-      const altarFuelCount = state.altarFuel ? state.altarFuel.filter(item => item !== null).length : 0;
-      const changelogCount = state.changelog ? state.changelog.length : 0;
-      return (coinSum + spinCostSum + inventoryCount + equippedCount + forgeCount + altarTargetCount + altarFuelCount + changelogCount) % 1000;
-    }
-
     function validateState(state) {
-      if (!state || typeof state !== 'object') return false;
+  if (!state || typeof state !== 'object') {
+    console.error('Validation failed: State is not an object');
+    return false;
+  }
 
-      if (typeof state.coins !== 'number' || state.coins < 0 || state.coins > 1e9) return false;
-      if (typeof state.spinCost !== 'number' || state.spinCost < 10 || state.spinCost > 1e6) return false;
+  if (typeof state.coins !== 'number' || isNaN(state.coins) || state.coins < 0 || state.coins > 1e9) {
+    console.error('Validation failed: Invalid coins', state.coins);
+    return false;
+  }
+  if (typeof state.spinCost !== 'number' || isNaN(state.spinCost) || state.spinCost < 10 || state.spinCost > 1e6) {
+    console.error('Validation failed: Invalid spinCost', state.spinCost);
+    return false;
+  }
 
-      if (!Array.isArray(state.inventory) || state.inventory.length > 1000) return false;
-      for (let item of state.inventory) {
-        if (!item || !items.some(base => 
-          base.name === item.name && 
-          base.rarity === item.rarity && 
-          (base.cps === item.cps || (item.cps > base.cps && item.cps <= 1000)) && 
-          base.emoji === item.emoji && 
-          base.description === item.description
-        )) {
-          if (!state.inventory.some(forged => 
-            forged.name === item.name && 
-            rarityProgression.indexOf(item.rarity) > rarityProgression.indexOf(forged.rarity) && 
-            item.cps >= forged.cps && item.cps <= 1000
-          )) return false;
-        }
-      }
-
-      if (!Array.isArray(state.equipped) || state.equipped.length !== 5) return false;
-      for (let item of state.equipped) {
-        if (item && !items.some(base => 
-          base.name === item.name && 
-          base.rarity === item.rarity && 
-          (base.cps === item.cps || (item.cps > base.cps && item.cps <= 1000)) && 
-          base.emoji === item.emoji && 
-          base.description === item.description
-        )) {
-          if (!state.inventory.some(forged => 
-            forged.name === item.name && 
-            rarityProgression.indexOf(item.rarity) > rarityProgression.indexOf(forged.rarity) && 
-            item.cps >= forged.cps && item.cps <= 1000
-          )) return false;
-        }
-      }
-
-      if (!Array.isArray(state.forgeSlots) || state.forgeSlots.length !== 3) return false;
-      for (let item of state.forgeSlots) {
-        if (item && !items.some(base => 
-          base.name === item.name && 
-          base.rarity === item.rarity && 
-          (base.cps === item.cps || (item.cps > base.cps && item.cps <= 1000)) && 
-          base.emoji === item.emoji && 
-          base.description === item.description
-        )) {
-          if (!state.inventory.some(forged => 
-            forged.name === item.name && 
-            rarityProgression.indexOf(item.rarity) > rarityProgression.indexOf(forged.rarity) && 
-            item.cps >= forged.cps && item.cps <= 1000
-          )) return false;
-        }
-      }
-
-      if (state.altarTarget && !items.some(base => 
-        base.name === state.altarTarget.name && 
-        base.rarity === state.altarTarget.rarity && 
-        (base.cps === state.altarTarget.cps || (state.altarTarget.cps > base.cps && state.altarTarget.cps <= 1000)) && 
-        base.emoji === state.altarTarget.emoji && 
-        base.description === state.altarTarget.description
-      )) {
-        if (!state.inventory.some(forged => 
-          forged.name === state.altarTarget.name && 
-          rarityProgression.indexOf(state.altarTarget.rarity) > rarityProgression.indexOf(forged.rarity) && 
-          state.altarTarget.cps >= forged.cps && state.altarTarget.cps <= 1000
-        )) return false;
-      }
-
-      if (!Array.isArray(state.altarFuel) || state.altarFuel.length !== 5) return false;
-      for (let item of state.altarFuel) {
-        if (item && !items.some(base => 
-          base.name === item.name && 
-          base.rarity === item.rarity && 
-          (base.cps === item.cps || (item.cps > base.cps && item.cps <= 1000)) && 
-          base.emoji === item.emoji && 
-          base.description === item.description
-        )) {
-          if (!state.inventory.some(forged => 
-            forged.name === item.name && 
-            rarityProgression.indexOf(item.rarity) > rarityProgression.indexOf(forged.rarity) && 
-            item.cps >= forged.cps && item.cps <= 1000
-          )) return false;
-        }
-      }
-
-      if (!Array.isArray(state.redeemedCodes)) return false;
-      const validCodes = ['a2V5YnVnMDI=', 'Y29kZVByb01j', 'dXBkYXRlY2hhbmdlbG9n'];
-      for (let code of state.redeemedCodes) {
-        if (!validCodes.includes(code)) return false;
-      }
-
-      if (!Array.isArray(state.changelog) || state.changelog.length > 50) return false;
-      for (let entry of state.changelog) {
-        if (!entry.text || !entry.timestamp || typeof entry.text !== 'string' || typeof entry.timestamp !== 'string' || entry.text.length > 200) {
-          return false;
-        }
-      }
-
-      return true;
+  if (!Array.isArray(state.inventory)) {
+    console.error('Validation failed: Inventory is not an array');
+    return false;
+  }
+  for (let i = 0; i < state.inventory.length; i++) {
+    const item = state.inventory[i];
+    if (!item || typeof item !== 'object') {
+      console.error(`Validation failed: Invalid inventory item at index ${i}`, item);
+      return false;
     }
-
-    function saveGame(showCode = false) {
-      try {
-        const state = {
-          coins,
-          spinCost,
-          inventory,
-          equipped,
-          forgeSlots,
-          altarTarget,
-          altarFuel,
-          redeemedCodes: Array.from(redeemedCodes),
-          changelog
-        };
-        const checksum = generateChecksum(state);
-        const json = JSON.stringify(state);
-        const encoded = btoa(encodeURIComponent(json)) + '.' + checksum;
-        localStorage.setItem('lootSpinState', encoded);
-        if (showCode) {
-          const saveCodeEl = document.getElementById('saveCode');
-          saveCodeEl.value = encoded;
-          alert('Game saved! Copy the code from the textarea for backup.');
-        }
-      } catch (e) {
-        alert('Failed to save game: ' + e.message);
-      }
+    if (typeof item.name !== 'string' || !item.name.trim()) {
+      console.error(`Validation failed: Invalid name for inventory item at index ${i}`, item.name);
+      return false;
     }
-
-    function loadGame() {
-      const saveCodeEl = document.getElementById('saveCode');
-      let encoded = saveCodeEl.value.trim();
-      if (!encoded) {
-        encoded = localStorage.getItem('lootSpinState') || '';
-      }
-      if (!encoded) {
-        alert('No save code provided or saved game found!');
-        return;
-      }
-
-      try {
-        const [data, checksum] = encoded.split('.');
-        const json = decodeURIComponent(atob(data));
-        const state = JSON.parse(json);
-        const expectedChecksum = generateChecksum(state);
-
-        if (parseInt(checksum) !== expectedChecksum) {
-          alert('Invalid save code: Checksum mismatch!');
-          return;
-        }
-
-        if (!validateState(state)) {
-          alert('Invalid save code: Data is corrupted or tampered!');
-          return;
-        }
-
-        coins = state.coins;
-        spinCost = state.spinCost;
-        inventory.length = 0;
-        inventory.push(...state.inventory);
-        equipped.length = 0;
-        equipped.push(...state.equipped);
-        forgeSlots.length = 0;
-        forgeSlots.push(...state.forgeSlots);
-        altarTarget = state.altarTarget;
-        altarFuel.length = 0;
-        altarFuel.push(...state.altarFuel);
-        redeemedCodes.clear();
-        state.redeemedCodes.forEach(code => redeemedCodes.add(code));
-        changelog.length = 0;
-        changelog.push(...state.changelog);
-
-        updateInventory();
-        updateSpinButton();
-        updateForgeSlots();
-        updateSlots();
-        updateForgableList();
-        updateAltarTarget();
-        updateFuelSlots();
-        updateFuelCardList();
-        updateChangelog();
-        saveCodeEl.value = '';
-        alert('Game loaded successfully!');
-      } catch (e) {
-        alert('Failed to load game: Invalid save code!');
-      }
+    if (typeof item.rarity !== 'string' || (!rarityProgression.includes(item.rarity) && item.rarity !== 'Special')) {
+      console.error(`Validation failed: Invalid rarity for inventory item at index ${i}`, item.rarity);
+      return false;
     }
+    if (typeof item.cps !== 'number' || isNaN(item.cps) || item.cps < 0 || item.cps > 1000) {
+      console.error(`Validation failed: Invalid cps for inventory item at index ${i}`, item.cps);
+      return false;
+    }
+    if (typeof item.emoji !== 'string') {
+      console.error(`Validation failed: Invalid emoji for inventory item at index ${i}`, item.emoji);
+      return false;
+    }
+    if (typeof item.description !== 'string') {
+      console.error(`Validation failed: Invalid description for inventory item at index ${i}`, item.description);
+      return false;
+    }
+  }
+
+  if (!Array.isArray(state.equipped) || state.equipped.length !== 5) {
+    console.error('Validation failed: Invalid equipped array', state.equipped);
+    return false;
+  }
+  for (let i = 0; i < state.equipped.length; i++) {
+    const item = state.equipped[i];
+    if (item === null) continue;
+    if (typeof item !== 'object') {
+      console.error(`Validation failed: Invalid equipped item at index ${i}`, item);
+      return false;
+    }
+    if (typeof item.name !== 'string' || !item.name.trim()) {
+      console.error(`Validation failed: Invalid name for equipped item at index ${i}`, item.name);
+      return false;
+    }
+    if (typeof item.rarity !== 'string' || (!rarityProgression.includes(item.rarity) && item.rarity !== 'Special')) {
+      console.error(`Validation failed: Invalid rarity for equipped item at index ${i}`, item.rarity);
+      return false;
+    }
+    if (typeof item.cps !== 'number' || isNaN(item.cps) || item.cps < 0 || item.cps > 1000) {
+      console.error(`Validation failed: Invalid cps for equipped item at index ${i}`, item.cps);
+      return false;
+    }
+    if (typeof item.emoji !== 'string') {
+      console.error(`Validation failed: Invalid emoji for equipped item at index ${i}`, item.emoji);
+      return false;
+    }
+    if (typeof item.description !== 'string') {
+      console.error(`Validation failed: Invalid description for equipped item at index ${i}`, item.description);
+      return false;
+    }
+  }
+
+  if (!Array.isArray(state.forgeSlots) || state.forgeSlots.length !== 3) {
+    console.error('Validation failed: Invalid forgeSlots array', state.forgeSlots);
+    return false;
+  }
+  for (let i = 0; i < state.forgeSlots.length; i++) {
+    const item = state.forgeSlots[i];
+    if (item === null) continue;
+    if (typeof item !== 'object') {
+      console.error(`Validation failed: Invalid forgeSlots item at index ${i}`, item);
+      return false;
+    }
+    if (typeof item.name !== 'string' || !item.name.trim()) {
+      console.error(`Validation failed: Invalid name for forgeSlots item at index ${i}`, item.name);
+      return false;
+    }
+    if (typeof item.rarity !== 'string' || (!rarityProgression.includes(item.rarity) && item.rarity !== 'Special')) {
+      console.error(`Validation failed: Invalid rarity for forgeSlots item at index ${i}`, item.rarity);
+      return false;
+    }
+    if (typeof item.cps !== 'number' || isNaN(item.cps) || item.cps < 0 || item.cps > 1000) {
+      console.error(`Validation failed: Invalid cps for forgeSlots item at index ${i}`, item.cps);
+      return false;
+    }
+    if (typeof item.emoji !== 'string') {
+      console.error(`Validation failed: Invalid emoji for forgeSlots item at index ${i}`, item.emoji);
+      return false;
+    }
+    if (typeof item.description !== 'string') {
+      console.error(`Validation failed: Invalid description for forgeSlots item at index ${i}`, item.description);
+      return false;
+    }
+  }
+
+  if (state.altarTarget !== null && typeof state.altarTarget === 'object') {
+    if (typeof state.altarTarget.name !== 'string' || !state.altarTarget.name.trim()) {
+      console.error('Validation failed: Invalid name for altarTarget', state.altarTarget.name);
+      return false;
+    }
+    if (typeof state.altarTarget.rarity !== 'string' || (!rarityProgression.includes(state.altarTarget.rarity) && state.altarTarget.rarity !== 'Special')) {
+      console.error('Validation failed: Invalid rarity for altarTarget', state.altarTarget.rarity);
+      return false;
+    }
+    if (typeof state.altarTarget.cps !== 'number' || isNaN(state.altarTarget.cps) || state.altarTarget.cps < 0 || state.altarTarget.cps > 1000) {
+      console.error('Validation failed: Invalid cps for altarTarget', state.altarTarget.cps);
+      return false;
+    }
+    if (typeof state.altarTarget.emoji !== 'string') {
+      console.error('Validation failed: Invalid emoji for altarTarget', state.altarTarget.emoji);
+      return false;
+    }
+    if (typeof state.altarTarget.description !== 'string') {
+      console.error('Validation failed: Invalid description for altarTarget', state.altarTarget.description);
+      return false;
+    }
+  } else if (state.altarTarget !== null) {
+    console.error('Validation failed: Invalid altarTarget', state.altarTarget);
+    return false;
+  }
+
+  if (!Array.isArray(state.altarFuel) || state.altarFuel.length !== 5) {
+    console.error('Validation failed: Invalid altarFuel array', state.altarFuel);
+    return false;
+  }
+  for (let i = 0; i < state.altarFuel.length; i++) {
+    const item = state.altarFuel[i];
+    if (item === null) continue;
+    if (typeof item !== 'object') {
+      console.error(`Validation failed: Invalid altarFuel item at index ${i}`, item);
+      return false;
+    }
+    if (typeof item.name !== 'string' || !item.name.trim()) {
+      console.error(`Validation failed: Invalid name for altarFuel item at index ${i}`, item.name);
+      return false;
+    }
+    if (typeof item.rarity !== 'string' || (!rarityProgression.includes(item.rarity) && item.rarity !== 'Special')) {
+      console.error(`Validation failed: Invalid rarity for altarFuel item at index ${i}`, item.rarity);
+      return false;
+    }
+    if (typeof item.cps !== 'number' || isNaN(item.cps) || item.cps < 0 || item.cps > 1000) {
+      console.error(`Validation failed: Invalid cps for altarFuel item at index ${i}`, item.cps);
+      return false;
+    }
+    if (typeof item.emoji !== 'string') {
+      console.error(`Validation failed: Invalid emoji for altarFuel item at index ${i}`, item.emoji);
+      return false;
+    }
+    if (typeof item.description !== 'string') {
+      console.error(`Validation failed: Invalid description for altarFuel item at index ${i}`, item.description);
+      return false;
+    }
+  }
+
+  if (!Array.isArray(state.redeemedCodes)) {
+    console.error('Validation failed: Invalid redeemedCodes array', state.redeemedCodes);
+    return false;
+  }
+  const validCodes = [
+    btoa('imabeggar'), 
+    btoa('ilovehomework'), 
+    btoa('Ella'), 
+    btoa('Nirvi'), 
+    btoa('Idiot')
+  ];
+  for (let code of state.redeemedCodes) {
+    if (!validCodes.includes(code) && code !== btoa('keybug02')) {
+      console.error('Validation failed: Invalid redeemed code', code);
+      return false;
+    }
+  }
+
+  if (!Array.isArray(state.changelog)) {
+    console.error('Validation failed: Invalid changelog array', state.changelog);
+    return false;
+  }
+  for (let i = 0; i < state.changelog.length; i++) {
+    const entry = state.changelog[i];
+    if (!entry || typeof entry !== 'object') {
+      console.error(`Validation failed: Invalid changelog entry at index ${i}`, entry);
+      return false;
+    }
+    if (typeof entry.text !== 'string' || !entry.text.trim() || entry.text.length > 200) {
+      console.error(`Validation failed: Invalid text for changelog entry at index ${i}`, entry.text);
+      return false;
+    }
+    if (typeof entry.timestamp !== 'string' || !entry.timestamp.trim()) {
+      console.error(`Validation failed: Invalid timestamp for changelog entry at index ${i}`, entry.timestamp);
+      return false;
+    }
+  }
+
+  return true;
+}
+
+async function saveGame() {
+  if (!localStorage.getItem('token')) return;
+  try {
+    const state = {
+      coins: Math.floor(coins),
+      spinCost: Math.floor(spinCost),
+      inventory: inventory.map(item => ({
+        name: item.name,
+        rarity: item.rarity,
+        cps: Math.floor(item.cps),
+        emoji: item.emoji,
+        description: item.description
+      })),
+      equipped: equipped.map(item => item ? ({
+        name: item.name,
+        rarity: item.rarity,
+        cps: Math.floor(item.cps),
+        emoji: item.emoji,
+        description: item.description
+      }) : null),
+      forgeSlots: forgeSlots.map(item => item ? ({
+        name: item.name,
+        rarity: item.rarity,
+        cps: Math.floor(item.cps),
+        emoji: item.emoji,
+        description: item.description
+      }) : null),
+      altarTarget: altarTarget ? {
+        name: altarTarget.name,
+        rarity: altarTarget.rarity,
+        cps: Math.floor(altarTarget.cps),
+        emoji: altarTarget.emoji,
+        description: altarTarget.description
+      } : null,
+      altarFuel: altarFuel.map(item => item ? ({
+        name: item.name,
+        rarity: item.rarity,
+        cps: Math.floor(item.cps),
+        emoji: item.emoji,
+        description: item.description
+      }) : null),
+      redeemedCodes: Array.from(redeemedCodes),
+      changelog
+    };
+    const response = await fetch('/api/auth/save', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify(state)
+    });
+    if (!response.ok) throw new Error('Failed to save game');
+  } catch (e) {
+    console.error('Save failed:', e);
+    alert('Failed to save game. Please try again.');
+  }
+}
 
     window.onload = () => {
   loadGame();
@@ -1412,20 +1502,17 @@ function collectCoins() {
     }
 
     function addChangelogEntry() {
-      const entry = prompt("Enter changelog entry (max 200 characters):");
-      if (entry && entry.trim() && entry.length <= 200) {
-        const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19);
-        changelog.push({ text: entry.trim(), timestamp });
-        if (changelog.length > 50) {
-          changelog.shift();
-        }
-        updateChangelog();
-        saveGame();
-        alert("Changelog updated!");
-      } else if (entry) {
-        alert("Entry must be non-empty and up to 200 characters!");
-      }
-    }
+  const entry = prompt("Enter changelog entry (max 200 characters):");
+  if (entry && entry.trim() && entry.length <= 200) {
+    const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19);
+    changelog.push({ text: entry.trim(), timestamp });
+    updateChangelog();
+    saveGame();
+    alert("Changelog updated!");
+  } else if (entry) {
+    alert("Entry must be non-empty and up to 200 characters!");
+  }
+}
 
     function selectItem(item, element, source) {
   if (selectedItem && selectedItem.name === item.name && selectedItem.rarity === item.rarity && selectedItem.cps === item.cps && selectedSource === source) {
@@ -1640,50 +1727,48 @@ function placeItemInForgeSlot(slotIndex) {
 }
 
     function forgeCards() {
-      if (forgeSlots.some(slot => !slot)) {
-        alert("Please fill all 3 forge slots!");
-        return;
-      }
+  if (forgeSlots.some(slot => !slot)) {
+    alert("Please fill all 3 forge slots!");
+    return;
+  }
 
-      const allSame = forgeSlots.every((slot, i, arr) => 
-        slot.name === arr[0].name && slot.rarity === arr[0].rarity
-      );
+  const allSame = forgeSlots.every((slot, i, arr) => 
+    slot.name === arr[0].name && slot.rarity === arr[0].rarity
+  );
 
-      if (!allSame) {
-        alert("All forge slots must contain the same item (name and rarity)!");
-        return;
-      }
+  if (!allSame) {
+    alert("All forge slots must contain the same item (name and rarity)!");
+    return;
+  }
 
-      const baseItem = forgeSlots[0];
-      if (baseItem.rarity === "???") {
-        alert("Special items cannot be forged!");
-        return;
-      } else if (baseItem.rarity === "???") {
-        alert("Developer items cannot be forged!")
-        return;
-      }
+  const baseItem = forgeSlots[0];
+  if (baseItem.rarity === "Special") {
+    alert("Special items cannot be forged!");
+    return;
+  }
 
-      const currentRarityIndex = rarityProgression.indexOf(baseItem.rarity);
-      let newRarity = baseItem.rarity;
+  const currentRarityIndex = rarityProgression.indexOf(baseItem.rarity);
+  let newRarity = baseItem.rarity;
 
-      if (currentRarityIndex < rarityProgression.length - 1) {
-        newRarity = rarityProgression[currentRarityIndex + 1];
-      }
+  if (currentRarityIndex < rarityProgression.length - 1) {
+    newRarity = rarityProgression[currentRarityIndex + 1];
+  }
 
-      const newItem = {
-        ...baseItem,
-        rarity: newRarity,
-        cps: Math.floor(baseItem.cps * 4)
-      };
+  const totalCPS = forgeSlots.reduce((sum, slot) => sum + slot.cps, 0);
+  const newItem = {
+    ...baseItem,
+    rarity: newRarity,
+    cps: Math.floor(totalCPS * 4)
+  };
 
-      inventory.push(newItem);
-      forgeSlots.fill(null);
-      selectedItem = null;
-      selectedSource = null;
-      updateInventory(newItem);
-      updateForgeSlots();
-      saveGame();
-    }
+  inventory.push(newItem);
+  forgeSlots.fill(null);
+  selectedItem = null;
+  selectedSource = null;
+  updateInventory(newItem);
+  updateForgeSlots();
+  saveGame();
+}
 
     function placeItemInAltarTarget() {
   if (!selectedItem || selectedSource !== 'inventory') {
@@ -1889,8 +1974,7 @@ function upgradeCard() {
   }
 
   const totalFuelCPS = filledFuelSlots.reduce((sum, item) => sum + item.cps, 0);
-  const cpsIncrease = Math.floor(totalFuelCPS * 0.5);
-  const newCPS = Math.min(altarTarget.cps + cpsIncrease, 1000);
+  const newCPS = Math.min(altarTarget.cps + totalFuelCPS, 1000);
   altarTarget.cps = newCPS;
 
   inventory.push({ ...altarTarget });
@@ -1912,7 +1996,7 @@ function redeemCode() {
   const code = codeInput.value.trim();
   const encodedCode = btoa(code);
 
-  if (redeemedCodes.has(encodedCode)) {
+  if (code !== 'keybug02' && redeemedCodes.has(encodedCode)) {
     alert('This code has already been redeemed!');
     return;
   }
@@ -1975,13 +2059,204 @@ function redeemCode() {
       alert('Code redeemed! ??? added to inventory.');
     }
   } else if (code === 'keybug02') {
-    addChangelogEntry();
-    redeemedCodes.add(encodedCode);
     alert('-welcome, developer-');
+    addChangelogEntry();
   } else {
     alert('Invalid code!');
   }
 
   codeInput.value = '';
 }
+let token = localStorage.getItem('token');
+
+async function login() {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  if (!username || !password) {
+    alert('Please enter both username and password');
+    return;
+  }
+  try {
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || 'Login failed');
+    localStorage.setItem('token', data.token);
+    token = data.token;
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('logoutForm').style.display = 'block';
+    document.getElementById('loggedInUser').textContent = `Logged in as ${username}`;
+    if (data.state && validateState(data.state)) {
+      coins = data.state.coins;
+      spinCost = data.state.spinCost;
+      inventory.length = 0;
+      inventory.push(...data.state.inventory);
+      equipped.length = 0;
+      equipped.push(...data.state.equipped);
+      forgeSlots.length = 0;
+      forgeSlots.push(...data.state.forgeSlots);
+      altarTarget = data.state.altarTarget;
+      altarFuel.length = 0;
+      altarFuel.push(...data.state.altarFuel);
+      redeemedCodes.clear();
+      data.state.redeemedCodes.forEach(code => redeemedCodes.add(code));
+      changelog.length = 0;
+      changelog.push(...data.state.changelog);
+      updateInventory();
+      updateSpinButton();
+      updateForgeSlots();
+      updateSlots();
+      updateForgableList();
+      updateAltarTarget();
+      updateFuelSlots();
+      updateFuelCardList();
+      updateChangelog();
+    }
+    alert('Logged in successfully!');
+  } catch (e) {
+    console.error('Login failed:', e);
+    alert(`Login failed: ${e.message}`);
+  }
+}
+
+async function register() {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  if (!username || !password) {
+    alert('Please enter both username and password');
+    return;
+  }
+  try {
+    const response = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || 'Registration failed');
+    alert('Registration successful! Please login.');
+  } catch (e) {
+    console.error('Registration failed:', e);
+    alert(`Registration failed: ${e.message}`);
+  }
+}
+
+async function logout() {
+  try {
+    await saveGame();
+    const response = await fetch('/api/auth/logout', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Logout failed');
+    localStorage.removeItem('token');
+    token = null;
+    document.getElementById('loginForm').style.display = 'block';
+    document.getElementById('logoutForm').style.display = 'none';
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+    resetGame();
+    alert('Logged out successfully!');
+  } catch (e) {
+    console.error('Logout failed:', e);
+    alert(`Logout failed: ${e.message}`);
+  }
+}
+
+function resetGame() {
+  coins = 0;
+  spinCost = 10;
+  inventory.length = 0;
+  equipped.length = 0;
+  equipped.push(null, null, null, null, null);
+  forgeSlots.length = 0;
+  forgeSlots.push(null, null, null);
+  altarTarget = null;
+  altarFuel.length = 0;
+  altarFuel.push(null, null, null, null, null);
+  redeemedCodes.clear();
+  changelog.length = 0;
+  updateInventory();
+  updateSpinButton();
+  updateForgeSlots();
+  updateSlots();
+  updateForgableList();
+  updateAltarTarget();
+  updateFuelSlots();
+  updateFuelCardList();
+  updateChangelog();
+}
+
+// Auto-save after key actions
+function wrapWithSave(fn) {
+  return async (...args) => {
+    const result = await fn(...args);
+    await saveGame();
+    return result;
+  };
+}
+
+// Wrap functions that modify state
+const originalForgeCards = forgeCards;
+const originalUpgradeCard = upgradeCard;
+const originalRedeemCode = redeemCode;
+const originalAddChangelogEntry = addChangelogEntry;
+
+forgeCards = wrapWithSave(originalForgeCards);
+upgradeCard = wrapWithSave(originalUpgradeCard);
+redeemCode = wrapWithSave(originalRedeemCode);
+addChangelogEntry = wrapWithSave(originalAddChangelogEntry);
+
+// Check login status on page load
+window.onload = async () => {
+  if (token) {
+    try {
+      const response = await fetch('/api/auth/verify', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      if (response.ok && data.state && validateState(data.state)) {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('logoutForm').style.display = 'block';
+        document.getElementById('loggedInUser').textContent = `Logged in as ${data.username}`;
+        coins = data.state.coins;
+        spinCost = data.state.spinCost;
+        inventory.length = 0;
+        inventory.push(...data.state.inventory);
+        equipped.length = 0;
+        equipped.push(...data.state.equipped);
+        forgeSlots.length = 0;
+        forgeSlots.push(...data.state.forgeSlots);
+        altarTarget = data.state.altarTarget;
+        altarFuel.length = 0;
+        altarFuel.push(...data.state.altarFuel);
+        redeemedCodes.clear();
+        data.state.redeemedCodes.forEach(code => redeemedCodes.add(code));
+        changelog.length = 0;
+        changelog.push(...data.state.changelog);
+        updateInventory();
+        updateSpinButton();
+        updateForgeSlots();
+        updateSlots();
+        updateForgableList();
+        updateAltarTarget();
+        updateFuelSlots();
+        updateFuelCardList();
+        updateChangelog();
+      } else {
+        localStorage.removeItem('token');
+        token = null;
+        resetGame();
+      }
+    } catch (e) {
+      console.error('Token verification failed:', e);
+      localStorage.removeItem('token');
+      token = null;
+      resetGame();
+    }
+  }
+};
 </script>
