@@ -19,11 +19,11 @@
       justify-content: center;
       gap: 20px;
       margin: 40px auto;
-      max-width: 900px;
+      max-width: 1400px;
       position: relative;
     }
 
-    .ascension-shop {
+    .ascension-shop, .upgrade-altar {
       width: 250px;
       background: rgba(255, 255, 255, 0.05);
       padding: 20px;
@@ -32,19 +32,19 @@
       text-align: center;
     }
 
-    .ascension-shop h2 {
+    .ascension-shop h2, .upgrade-altar h2 {
       font-size: 1.8em;
       margin-top: 0;
     }
 
-    .forge-slots {
+    .forge-slots, .fuel-slots {
       display: flex;
       flex-direction: column;
       gap: 10px;
       margin-top: 20px;
     }
 
-    .forge-slot {
+    .forge-slot, .target-slot, .fuel-slot {
       width: 100%;
       height: 60px;
       border: 2px dashed #888;
@@ -58,12 +58,12 @@
       cursor: pointer;
     }
 
-    .forge-slot:hover {
+    .forge-slot:hover, .target-slot:hover, .fuel-slot:hover {
       transform: scale(1.02);
       box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
     }
 
-    .forge-button {
+    .forge-button, .upgrade-button {
       margin-top: 20px;
       padding: 10px 20px;
       font-size: 1em;
@@ -75,8 +75,97 @@
       font-family: 'Comfortaa', cursive;
     }
 
-    .forge-button:hover {
+    .forge-button:hover, .upgrade-button:hover {
       background: #ff4d94;
+    }
+
+    .batch-selection {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    .batch-selection select, .batch-selection button {
+      padding: 6px;
+      font-size: 0.8em;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid #888;
+      border-radius: 5px;
+      color: #fff;
+      font-family: 'Comfortaa', cursive;
+    }
+
+    .batch-selection button {
+      background: #00c3ff;
+      border: none;
+      cursor: pointer;
+    }
+
+    .batch-selection button:hover {
+      background: #00a3dd;
+    }
+
+    .changelog {
+      margin-top: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 15px;
+      border-radius: 15px;
+      max-height: 200px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #dc143c rgba(255, 255, 255, 0.1);
+      text-align: left;
+    }
+
+    .changelog::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .changelog::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+
+    .changelog::-webkit-scrollbar-thumb {
+      background: #dc143c;
+      border-radius: 10px;
+    }
+
+    .changelog::-webkit-scrollbar-thumb:hover {
+      background: #b01030;
+    }
+
+    .changelog h3 {
+      border-bottom: 1px solid #444;
+      padding-bottom: 10px;
+      margin-top: 0;
+    }
+
+    .changelog ul {
+      list-style-type: none;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    .changelog li {
+      padding: 8px;
+      margin: 5px 0;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .changelog a {
+      color: #00c3ff;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .changelog a:hover {
+      color: #00a3dd;
     }
 
     .game-container {
@@ -179,7 +268,7 @@
       box-shadow: 0 0 25px rgba(220, 20, 60, 0.8);
     }
 
-    /* Inventory list item variants */
+    /* Inventory and list item variants */
     .Common-li { background: rgba(189, 195, 199, 0.7); }
     .Uncommon-li { background: rgba(46, 204, 113, 0.7); }
     .Rare-li { background: rgba(52, 152, 219, 0.7); }
@@ -190,11 +279,11 @@
     .Celestial-li { background: rgba(0, 247, 255, 0.7); }
     .Special-li { background: rgba(220, 20, 60, 0.7); }
 
-    .inventory {
-      margin-top: 40px;
+    .inventory, .forgable-list, .fuel-card-list, .changelog {
+      margin-top: 20px;
       text-align: left;
       background: rgba(255, 255, 255, 0.03);
-      padding: 15px 20px;
+      padding: 15px;
       border-radius: 15px;
       max-height: 250px;
       overflow-y: auto;
@@ -202,36 +291,36 @@
       scrollbar-color: #dc143c rgba(255, 255, 255, 0.1);
     }
 
-    .inventory::-webkit-scrollbar {
+    .inventory::-webkit-scrollbar, .forgable-list::-webkit-scrollbar, .fuel-card-list::-webkit-scrollbar, .changelog::-webkit-scrollbar {
       width: 8px;
     }
 
-    .inventory::-webkit-scrollbar-track {
+    .inventory::-webkit-scrollbar-track, .forgable-list::-webkit-scrollbar-track, .fuel-card-list::-webkit-scrollbar-track, .changelog::-webkit-scrollbar-track {
       background: rgba(255, 255, 255, 0.1);
       border-radius: 10px;
     }
 
-    .inventory::-webkit-scrollbar-thumb {
+    .inventory::-webkit-scrollbar-thumb, .forgable-list::-webkit-scrollbar-thumb, .fuel-card-list::-webkit-scrollbar-thumb, .changelog::-webkit-scrollbar-thumb {
       background: #dc143c;
       border-radius: 10px;
     }
 
-    .inventory::-webkit-scrollbar-thumb:hover {
+    .inventory::-webkit-scrollbar-thumb:hover, .forgable-list::-webkit-scrollbar-thumb:hover, .fuel-card-list::-webkit-scrollbar-thumb:hover, .changelog::-webkit-scrollbar-thumb:hover {
       background: #b01030;
     }
 
-    .inventory h3 {
+    .inventory h3, .forgable-list h3, .fuel-card-list h3, .changelog h3 {
       border-bottom: 1px solid #444;
       padding-bottom: 10px;
     }
 
-    .inventory ul {
+    .inventory ul, .forgable-list ul, .fuel-card-list ul, .changelog ul {
       list-style-type: none;
       padding-left: 0;
       margin: 0;
     }
 
-    .inventory li {
+    .inventory li, .forgable-list li, .fuel-card-list li, .changelog li {
       padding: 8px;
       margin: 5px 0;
       border-radius: 8px;
@@ -240,12 +329,12 @@
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .inventory li:hover {
+    .inventory li:hover, .forgable-list li:hover, .fuel-card-list li:hover {
       transform: scale(1.02);
       box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
     }
 
-    .inventory li.selected {
+    .inventory li.selected, .forgable-list li.selected, .fuel-card-list li.selected {
       border: 2px solid #00f7ff;
       box-shadow: 0 0 15px rgba(0, 247, 255, 0.8);
     }
@@ -271,7 +360,7 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
-    .inventory li:hover .tooltip {
+    .inventory li:hover .tooltip, .forgable-list li:hover .tooltip, .fuel-card-list li:hover .tooltip, .target-slot:hover .tooltip, .fuel-slot:hover .tooltip {
       visibility: visible;
     }
 
@@ -305,7 +394,7 @@
       box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
     }
 
-    .slot .slot-content {
+    .slot-content {
       width: 100%;
       height: 100%;
       display: flex;
@@ -315,6 +404,103 @@
       padding: 5px;
       box-sizing: border-box;
     }
+
+    .forge-slot.Common { background: #bdc3c7; color: #2c3e50; }
+.forge-slot.Uncommon { background: #2ecc71; color: #fff; }
+.forge-slot.Rare { background: #3498db; color: #fff; }
+.forge-slot.SuperRare { background: #e67e22; color: #fff; }
+.forge-slot.Epic { background: #9b59b6; color: #fff; }
+.forge-slot.Legendary { background: #f1c40f; color: #000; }
+.forge-slot.Mythical { background: #ff69b4; color: #fff; }
+.forge-slot.Celestial { background: #00f7ff; color: #000; }
+.forge-slot.Special { background: #dc143c; color: #fff; }
+
+.target-slot.Common { background: #bdc3c7; color: #2c3e50; }
+.target-slot.Uncommon { background: #2ecc71; color: #fff; }
+.target-slot.Rare { background: #3498db; color: #fff; }
+.target-slot.SuperRare { background: #e67e22; color: #fff; }
+.target-slot.Epic { background: #9b59b6; color: #fff; }
+.target-slot.Legendary { background: #f1c40f; color: #000; }
+.target-slot.Mythical { background: #ff69b4; color: #fff; }
+.target-slot.Celestial { background: #00f7ff; color: #000; }
+.target-slot.Special { background: #dc143c; color: #fff; }
+
+.fuel-slot.Common { background: #bdc3c7; color: #2c3e50; }
+.fuel-slot.Uncommon { background: #2ecc71; color: #fff; }
+.fuel-slot.Rare { background: #3498db; color: #fff; }
+.fuel-slot.SuperRare { background: #e67e22; color: #fff; }
+.fuel-slot.Epic { background: #9b59b6; color: #fff; }
+.fuel-slot.Legendary { background: #f1c40f; color: #000; }
+.fuel-slot.Mythical { background: #ff69b4; color: #fff; }
+.fuel-slot.Celestial { background: #00f7ff; color: #000; }
+.fuel-slot.Special { background: #dc143c; color: #fff; }
+
+.forge-slot, .target-slot, .fuel-slot, .slot-content {
+  background: none !important;
+}
+
+/* Ensure rarity-specific backgrounds for slots */
+.forge-slot.Common, .target-slot.Common, .fuel-slot.Common, .slot-content.Common {
+  background: #bdc3c7 !important; color: #2c3e50 !important;
+}
+.forge-slot.Uncommon, .target-slot.Uncommon, .fuel-slot.Uncommon, .slot-content.Uncommon {
+  background: #2ecc71 !important; color: #fff !important;
+}
+.forge-slot.Rare, .target-slot.Rare, .fuel-slot.Rare, .slot-content.Rare {
+  background: #3498db !important; color: #fff !important;
+}
+.forge-slot.SuperRare, .target-slot.SuperRare, .fuel-slot.SuperRare, .slot-content.SuperRare {
+  background: #e67e22 !important; color: #fff !important;
+}
+.forge-slot.Epic, .target-slot.Epic, .fuel-slot.Epic, .slot-content.Epic {
+  background: #9b59b6 !important; color: #fff !important;
+}
+.forge-slot.Legendary, .target-slot.Legendary, .fuel-slot.Legendary, .slot-content.Legendary {
+  background: #f1c40f !important; color: #000 !important;
+}
+.forge-slot.Mythical, .target-slot.Mythical, .fuel-slot.Mythical, .slot-content.Mythical {
+  background: #ff69b4 !important; color: #fff !important;
+}
+.forge-slot.Celestial, .target-slot.Celestial, .fuel-slot.Celestial, .slot-content.Celestial {
+  background: #00f7ff !important; color: #000 !important;
+}
+.forge-slot.Special, .target-slot.Special, .fuel-slot.Special, .slot-content.Special {
+  background: #dc143c !important; color: #fff !important;
+}
+
+#batchRarity, #batchRarity option {
+  color: #000 !important;
+}
+#batchRarity option[value="Common"] { background: #bdc3c7 !important; }
+#batchRarity option[value="Uncommon"] { background: #2ecc71 !important; }
+#batchRarity option[value="Rare"] { background: #3498db !important; }
+#batchRarity option[value="SuperRare"] { background: #e67e22 !important; }
+#batchRarity option[value="Epic"] { background: #9b59b6 !important; }
+#batchRarity option[value="Legendary"] { background: #f1c40f !important; }
+#batchRarity option[value="Mythical"] { background: #ff69b4 !important; }
+#batchRarity option[value="Celestial"] { background: #00f7ff !important; }
+#batchRarity option[value="Special"] { background: #dc143c !important; }
+
+#batchCPS {
+  padding: 6px;
+  font-size: 0.8em;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid #888;
+  border-radius: 5px;
+  color: #fff;
+  font-family: 'Comfortaa', cursive;
+  width: 100px;
+  transition: border-color 0.2s ease;
+}
+
+#batchCPS:focus {
+  border-color: #00c3ff;
+  outline: none;
+}
+
+#batchCPS:invalid {
+  border-color: #dc143c;
+}
 
     .slot .tooltip {
       bottom: auto;
@@ -370,32 +556,38 @@
     }
 
     .special-content {
-      background: rgba(30, 30, 47, 0.9);
-      padding: 30px;
+      background: rgba(30, 30, 47, 0.95);
+      padding: 40px;
       border-radius: 15px;
       text-align: center;
-      max-width: 400px;
+      max-width: 450px;
+      box-shadow: 0 0 30px rgba(0, 247, 255, 0.5);
     }
 
     .special-title {
-      font-size: 2em;
-      margin-bottom: 10px;
+      font-size: 2.2em;
+      font-weight: bold;
+      margin-bottom: 15px;
+      padding: 5px 10px;
+      border-radius: 5px;
     }
 
     .special-title.Celestial {
       color: #00f7ff;
-      text-shadow: 0 0 10px rgba(0, 247, 255, 0.8);
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 247, 255, 0.6);
+      background: rgba(0, 0, 0, 0.3);
     }
 
     .special-title.Special {
       color: #dc143c;
-      text-shadow: 0 0 10px rgba(220, 20, 60, 0.8);
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.8), 0 0 12px rgba(220, 20, 60, 0.6);
+      background: rgba(0, 0, 0, 0.3);
     }
 
     .special-item {
       font-size: 1.5em;
       font-weight: bold;
-      margin: 10px 0;
+      margin: 15px 0;
     }
 
     .close-special {
@@ -523,13 +715,16 @@
           <button onclick="loadGame()">Load Game</button>
         </div>
       </div>
+      <div class="forgable-list">
+        <h3>🛠️ Forgable Items:</h3>
+        <ul id="forgableList"></ul>
+      </div>
     </div>
     <div class="game-container">
       <h1>🎰 Loot Spin</h1>
       <div class="coin-counter">💰 Coins: <span id="coinCounter">100</span></div>
       <button class="spin-button" onclick="spin()">Spin (Cost: <span id="spinCost">10</span> Coins)</button>
       <div id="result" class="item-card"></div>
-
       <div class="slots" id="slots">
         <div class="slot" data-slot="0"><div class="slot-content">Slot 1</div></div>
         <div class="slot" data-slot="1"><div class="slot-content">Slot 2</div></div>
@@ -537,10 +732,45 @@
         <div class="slot" data-slot="3"><div class="slot-content">Slot 4</div></div>
         <div class="slot" data-slot="4"><div class="slot-content">Slot 5</div></div>
       </div>
-
       <div class="inventory">
         <h3>🎒 Inventory:</h3>
         <ul id="inventoryList"></ul>
+      </div>
+    </div>
+    <div class="upgrade-altar">
+      <h2>🔥 Upgrade Altar</h2>
+      <div class="target-slot" id="altarTarget">Target Slot</div>
+      <div class="fuel-slots" id="fuelSlots">
+        <div class="fuel-slot" data-slot="0">Fuel Slot 1</div>
+        <div class="fuel-slot" data-slot="1">Fuel Slot 2</div>
+        <div class="fuel-slot" data-slot="2">Fuel Slot 3</div>
+        <div class="fuel-slot" data-slot="3">Fuel Slot 4</div>
+        <div class="fuel-slot" data-slot="4">Fuel Slot 5</div>
+      </div>
+      <button class="upgrade-button" onclick="upgradeCard()">Upgrade Card</button>
+      <div class="batch-selection">
+        <select id="batchRarity">
+          <option value="">Select Rarity</option>
+          <option value="Common">Common</option>
+          <option value="Uncommon">Uncommon</option>
+          <option value="Rare">Rare</option>
+          <option value="SuperRare">SuperRare</option>
+          <option value="Epic">Epic</option>
+          <option value="Legendary">Legendary</option>
+          <option value="Mythical">Mythical</option>
+          <option value="Celestial">Celestial</option>
+          <option value="Special">Special</option>
+        </select>
+        <input type="number" id="batchCPS" min="0" placeholder="Enter CPS (0-1000)" title="Enter a CPS value between 0 and 1000">
+        <button onclick="batchSelectFuelCards()">Select</button>
+      </div>
+      <div class="fuel-card-list">
+        <h3>⛽ Fuel Cards:</h3>
+        <ul id="fuelCardList"></ul>
+      </div>
+      <div class="changelog">
+        <h3>📜 Changelog & Credits</h3>
+        <ul id="changelogList"></ul>
       </div>
     </div>
   </div>
@@ -551,8 +781,12 @@
     const inventory = [];
     const equipped = [null, null, null, null, null];
     const forgeSlots = [null, null, null];
+    let altarTarget = null;
+    const altarFuel = [null, null, null, null, null];
     let selectedItem = null;
+    let selectedSource = null; // 'inventory', 'forgable', or 'fuel'
     const redeemedCodes = new Set();
+    const changelog = [];
     const rarityOrder = { 
       Special: 9, 
       Celestial: 8, 
@@ -641,7 +875,10 @@
       { name: "Dumbledore’s Army", rarity: "Special", emoji: "🪖", cps: 65, chance: 0.001, description: "A rebellious group of brave students." },
       { name: "Snitch", rarity: "Special", emoji: "🏐", cps: 60, chance: 0.001, description: "The elusive prize of Quidditch." },
       { name: "Sorting Hat", rarity: "Special", emoji: "🎩", cps: 75, chance: 0.0005, description: "Chooses your Hogwarts house with wisdom." },
-      { name: "Professor McGonagall", rarity: "Special", emoji: "🧙‍♀️", cps: 50, chance: 0, description: "A strict but fair Transfiguration teacher." }
+      { name: "Professor McGonagall", rarity: "Special", emoji: "🧙‍♀️", cps: 50, chance: 0, description: "A strict but fair Transfiguration teacher." },
+      { name: "Ella", rarity: "Special", emoji: "🦖", cps: 50, chance: 0, description: "Rawr..." },
+      { name: "Nirvi", rarity: "Special", emoji: "🐒", cps: 40, chance: 0, description: "A peculiar monkey." },
+      { name: "Matthew Tan", rarity: "Special", emoji: "🤯", cps: 45, chance: 0,description: "Thinks he's smart." }
     ];
 
     function generateChecksum(state) {
@@ -650,76 +887,111 @@
       const inventoryCount = state.inventory ? state.inventory.length : 0;
       const equippedCount = state.equipped ? state.equipped.filter(item => item !== null).length : 0;
       const forgeCount = state.forgeSlots ? state.forgeSlots.filter(item => item !== null).length : 0;
-      return (coinSum + spinCostSum + inventoryCount + equippedCount + forgeCount) % 1000;
+      const altarTargetCount = state.altarTarget ? 1 : 0;
+      const altarFuelCount = state.altarFuel ? state.altarFuel.filter(item => item !== null).length : 0;
+      const changelogCount = state.changelog ? state.changelog.length : 0;
+      return (coinSum + spinCostSum + inventoryCount + equippedCount + forgeCount + altarTargetCount + altarFuelCount + changelogCount) % 1000;
     }
 
     function validateState(state) {
       if (!state || typeof state !== 'object') return false;
 
-      // Validate coins and spinCost
       if (typeof state.coins !== 'number' || state.coins < 0 || state.coins > 1e9) return false;
       if (typeof state.spinCost !== 'number' || state.spinCost < 10 || state.spinCost > 1e6) return false;
 
-      // Validate inventory
-      if (!Array.isArray(state.inventory)) return false;
+      if (!Array.isArray(state.inventory) || state.inventory.length > 1000) return false;
       for (let item of state.inventory) {
         if (!item || !items.some(base => 
           base.name === item.name && 
           base.rarity === item.rarity && 
-          base.cps === item.cps && 
+          (base.cps === item.cps || (item.cps > base.cps && item.cps <= 1000)) && 
           base.emoji === item.emoji && 
           base.description === item.description
         )) {
-          // Allow forged items with higher CPS
           if (!state.inventory.some(forged => 
             forged.name === item.name && 
             rarityProgression.indexOf(item.rarity) > rarityProgression.indexOf(forged.rarity) && 
-            item.cps >= forged.cps
+            item.cps >= forged.cps && item.cps <= 1000
           )) return false;
         }
       }
 
-      // Validate equipped
       if (!Array.isArray(state.equipped) || state.equipped.length !== 5) return false;
       for (let item of state.equipped) {
         if (item && !items.some(base => 
           base.name === item.name && 
           base.rarity === item.rarity && 
-          base.cps === item.cps && 
+          (base.cps === item.cps || (item.cps > base.cps && item.cps <= 1000)) && 
           base.emoji === item.emoji && 
           base.description === item.description
         )) {
           if (!state.inventory.some(forged => 
             forged.name === item.name && 
             rarityProgression.indexOf(item.rarity) > rarityProgression.indexOf(forged.rarity) && 
-            item.cps >= forged.cps
+            item.cps >= forged.cps && item.cps <= 1000
           )) return false;
         }
       }
 
-      // Validate forgeSlots
       if (!Array.isArray(state.forgeSlots) || state.forgeSlots.length !== 3) return false;
       for (let item of state.forgeSlots) {
         if (item && !items.some(base => 
           base.name === item.name && 
           base.rarity === item.rarity && 
-          base.cps === item.cps && 
+          (base.cps === item.cps || (item.cps > base.cps && item.cps <= 1000)) && 
           base.emoji === item.emoji && 
           base.description === item.description
         )) {
           if (!state.inventory.some(forged => 
             forged.name === item.name && 
             rarityProgression.indexOf(item.rarity) > rarityProgression.indexOf(forged.rarity) && 
-            item.cps >= forged.cps
+            item.cps >= forged.cps && item.cps <= 1000
           )) return false;
         }
       }
 
-      // Validate redeemedCodes
+      if (state.altarTarget && !items.some(base => 
+        base.name === state.altarTarget.name && 
+        base.rarity === state.altarTarget.rarity && 
+        (base.cps === state.altarTarget.cps || (state.altarTarget.cps > base.cps && state.altarTarget.cps <= 1000)) && 
+        base.emoji === state.altarTarget.emoji && 
+        base.description === state.altarTarget.description
+      )) {
+        if (!state.inventory.some(forged => 
+          forged.name === state.altarTarget.name && 
+          rarityProgression.indexOf(state.altarTarget.rarity) > rarityProgression.indexOf(forged.rarity) && 
+          state.altarTarget.cps >= forged.cps && state.altarTarget.cps <= 1000
+        )) return false;
+      }
+
+      if (!Array.isArray(state.altarFuel) || state.altarFuel.length !== 5) return false;
+      for (let item of state.altarFuel) {
+        if (item && !items.some(base => 
+          base.name === item.name && 
+          base.rarity === item.rarity && 
+          (base.cps === item.cps || (item.cps > base.cps && item.cps <= 1000)) && 
+          base.emoji === item.emoji && 
+          base.description === item.description
+        )) {
+          if (!state.inventory.some(forged => 
+            forged.name === item.name && 
+            rarityProgression.indexOf(item.rarity) > rarityProgression.indexOf(forged.rarity) && 
+            item.cps >= forged.cps && item.cps <= 1000
+          )) return false;
+        }
+      }
+
       if (!Array.isArray(state.redeemedCodes)) return false;
-      const validCodes = ['a2V5YnVnMDI=', 'Y29kZVByb01j'];
+      const validCodes = ['a2V5YnVnMDI=', 'Y29kZVByb01j', 'dXBkYXRlY2hhbmdlbG9n'];
       for (let code of state.redeemedCodes) {
         if (!validCodes.includes(code)) return false;
+      }
+
+      if (!Array.isArray(state.changelog) || state.changelog.length > 50) return false;
+      for (let entry of state.changelog) {
+        if (!entry.text || !entry.timestamp || typeof entry.text !== 'string' || typeof entry.timestamp !== 'string' || entry.text.length > 200) {
+          return false;
+        }
       }
 
       return true;
@@ -733,7 +1005,10 @@
           inventory,
           equipped,
           forgeSlots,
-          redeemedCodes: Array.from(redeemedCodes)
+          altarTarget,
+          altarFuel,
+          redeemedCodes: Array.from(redeemedCodes),
+          changelog
         };
         const checksum = generateChecksum(state);
         const json = JSON.stringify(state);
@@ -784,13 +1059,23 @@
         equipped.push(...state.equipped);
         forgeSlots.length = 0;
         forgeSlots.push(...state.forgeSlots);
+        altarTarget = state.altarTarget;
+        altarFuel.length = 0;
+        altarFuel.push(...state.altarFuel);
         redeemedCodes.clear();
         state.redeemedCodes.forEach(code => redeemedCodes.add(code));
+        changelog.length = 0;
+        changelog.push(...state.changelog);
 
         updateInventory();
         updateSpinButton();
         updateForgeSlots();
         updateSlots();
+        updateForgableList();
+        updateAltarTarget();
+        updateFuelSlots();
+        updateFuelCardList();
+        updateChangelog();
         saveCodeEl.value = '';
         alert('Game loaded successfully!');
       } catch (e) {
@@ -798,11 +1083,69 @@
       }
     }
 
-    // Load game on page load
     window.onload = () => {
-      loadGame();
-    };
+  loadGame();
+  // Validate slot states in place
+  for (let i = 0; i < forgeSlots.length; i++) {
+    forgeSlots[i] = forgeSlots[i] && forgeSlots[i].rarity && forgeSlots[i].name && Number.isInteger(forgeSlots[i].cps) && forgeSlots[i].cps >= 0 ? forgeSlots[i] : null;
+  }
+  altarTarget = altarTarget && altarTarget.rarity && altarTarget.name && Number.isInteger(altarTarget.cps) && altarTarget.cps >= 0 ? altarTarget : null;
+  for (let i = 0; i < altarFuel.length; i++) {
+    altarFuel[i] = altarFuel[i] && altarFuel[i].rarity && altarFuel[i].name && Number.isInteger(altarFuel[i].cps) && altarFuel[i].cps >= 0 ? altarFuel[i] : null;
+  }
+  for (let i = 0; i < equipped.length; i++) {
+    equipped[i] = equipped[i] && equipped[i].rarity && equipped[i].name && Number.isInteger(equipped[i].cps) && equipped[i].cps >= 0 ? equipped[i] : null;
+  }
+  // Log equipped for debugging
+  console.log('Equipped items:', equipped);
+  // Ensure coins is valid
+  if (typeof coins !== 'number' || isNaN(coins) || coins < 0) {
+    coins = 100;
+    console.log('Reset coins to 100');
+  }
+  // Clear inline backgrounds
+  document.querySelectorAll('.forge-slot, .target-slot, .fuel-slot, .slot-content').forEach(el => {
+    el.style.background = '';
+  });
+  updateInventory();
+  updateSlots();
+  updateForgeSlots();
+  updateAltarTarget();
+  updateFuelSlots();
+  updateForgableList();
+  updateFuelCardList();
+  updateChangelog();
+  updateSpinButton();
+  setInterval(() => {
+    collectCoins();
+    console.log('collectCoins called');
+  }, 1000);
 
+  // Add event listeners for batch selection
+  const batchRarity = document.getElementById('batchRarity');
+  const batchCPS = document.getElementById('batchCPS');
+  const batchButton = document.querySelector('.batch-selection button');
+  batchRarity.addEventListener('change', () => batchButton.disabled = !batchRarity.value && !batchCPS.value);
+  batchCPS.addEventListener('input', () => batchButton.disabled = !batchRarity.value && !batchCPS.value);
+};
+
+function collectCoins() {
+  let totalCPS = 0;
+  equipped.forEach(item => {
+    if (item && Number.isInteger(item.cps) && item.cps >= 0) {
+      totalCPS += item.cps;
+    }
+  });
+  console.log('collectCoins: equipped=', equipped, 'totalCPS=', totalCPS, 'coins=', coins);
+  coins += totalCPS;
+  updateSpinButton();
+  if (totalCPS > 0) {
+    const coinCounter = document.getElementById('coinCounter');
+    coinCounter.parentElement.classList.add('sparkle');
+    setTimeout(() => coinCounter.parentElement.classList.remove('sparkle'), 500);
+  }
+  saveGame();
+}
     function spin() {
       if (coins < spinCost) {
         alert("Not enough coins!");
@@ -826,6 +1169,10 @@
       }
       
       if (selectedItem) {
+        if (inventory.length >= 1000) {
+          alert("Inventory full! Please clear some items.");
+          return;
+        }
         inventory.push(selectedItem);
         showResult(selectedItem);
         updateInventory();
@@ -859,17 +1206,18 @@
 
     function createConfetti(rarity) {
       const colorMap = {
-        Celestial: ['#00f7ff', '#00c3ff', '#ffffff'],
+        Celestial: ['#00b7eb', '#0097c7', '#e6f7ff'],
         Special: ['#dc143c', '#ff4500', '#ffd700']
       };
       const colors = colorMap[rarity] || ['#ff0000', '#ff4500', '#ffd700', '#ffffff'];
       const confettiContainer = document.getElementById('confettiContainer');
       
-      for (let i = 0; i < 150; i++) {
+      for (let i = 0; i < 100; i++) {
         const confetti = document.createElement('div');
         confetti.className = 'confetti';
         confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        confetti.style.left = Math.random() * 100 + 'vw';
+        const leftPos = Math.random() < 0.5 ? Math.random() * 30 : 70 + Math.random() * 30;
+        confetti.style.left = leftPos + 'vw';
         confetti.style.top = -10 + 'px';
         confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
         
@@ -903,258 +1251,698 @@
       resultDiv.className = `item-card ${item.rarity}`;
     }
 
+    function updateSpinButton() {
+      const coinCounter = document.getElementById("coinCounter");
+      const spinCostEl = document.getElementById("spinCost");
+      coinCounter.textContent = Math.floor(coins);
+      spinCostEl.textContent = spinCost;
+    }
+
     function updateInventory(forgedCardName = null) {
-      const list = document.getElementById("inventoryList");
+  const list = document.getElementById("inventoryList");
+  list.innerHTML = "";
+  const sorted = [...inventory].sort((a, b) => {
+    if (b.cps !== a.cps) return b.cps - a.cps;
+    if (rarityOrder[b.rarity] !== rarityOrder[a.rarity]) return rarityOrder[b.rarity] - rarityOrder[a.rarity];
+    return a.name.localeCompare(b.name);
+  });
+  sorted.forEach((item, i) => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      ${item.name} ${item.emoji} (${item.rarity})
+      <div class="description-text">${item.cps} coins/sec</div>
+      <span class="tooltip">${item.description}</span>
+    `;
+    li.className = `${item.rarity}-li`;
+    if (forgedCardName && item.name === forgedCardName && item.rarity === forgedCardName.rarity) {
+      li.classList.add('forged-card');
+      setTimeout(() => li.classList.remove('forged-card'), 1000);
+    }
+    li.dataset.index = inventory.indexOf(item);
+    li.addEventListener('click', () => selectItem(item, li, 'inventory'));
+    if (selectedItem && selectedItem.name === item.name && selectedItem.rarity === item.rarity && selectedItem.cps === item.cps && selectedSource === 'inventory') {
+      li.classList.add('selected');
+    }
+    list.appendChild(li);
+  });
+  updateForgableList();
+  updateFuelCardList();
+}
+
+    function updateForgableList() {
+      const list = document.getElementById("forgableList");
       list.innerHTML = "";
-      const sorted = [...inventory].sort((a, b) => {
+      
+      const itemCounts = {};
+      inventory.forEach(item => {
+        if (item.rarity !== "Special") {
+          const key = `${item.name}|${item.rarity}`;
+          if (!itemCounts[key]) {
+            itemCounts[key] = { count: 0, item: item };
+          }
+          itemCounts[key].count++;
+        }
+      });
+
+      const forgableItems = Object.values(itemCounts)
+        .filter(data => data.count >= 3)
+        .map(data => ({
+          ...data.item,
+          count: data.count
+        }));
+
+      const sorted = forgableItems.sort((a, b) => {
         if (b.cps !== a.cps) return b.cps - a.cps;
         if (rarityOrder[b.rarity] !== rarityOrder[a.rarity]) return rarityOrder[b.rarity] - rarityOrder[a.rarity];
         return a.name.localeCompare(b.name);
       });
-      sorted.forEach((item, i) => {
+
+      sorted.forEach(item => {
         const li = document.createElement("li");
         li.innerHTML = `
-          ${item.name} ${item.emoji} (${item.rarity})
+          ${item.name} ${item.emoji} (${item.rarity}, x${item.count})
           <div class="description-text">${item.cps} coins/sec</div>
           <span class="tooltip">${item.description}</span>
         `;
         li.className = `${item.rarity}-li`;
-        if (forgedCardName && item.name === forgedCardName) {
-          li.classList.add('forged-card');
-          setTimeout(() => li.classList.remove('forged-card'), 1000);
-        }
-        li.dataset.index = inventory.indexOf(item);
-        li.addEventListener('click', () => selectItem(item, li));
-        if (selectedItem && selectedItem === item) {
+        li.addEventListener('click', () => selectItem(item, li, 'forgable'));
+        if (selectedItem && selectedItem.name === item.name && selectedItem.rarity === item.rarity && selectedSource === 'forgable') {
           li.classList.add('selected');
         }
         list.appendChild(li);
       });
     }
 
-    function selectItem(item, element) {
-      if (selectedItem === item) {
-        selectedItem = null;
-      } else {
-        selectedItem = item;
-      }
-      updateInventory();
+    function updateFuelCardList() {
+      const list = document.getElementById("fuelCardList");
+      list.innerHTML = "";
+      
+      const itemCounts = {};
+      inventory.forEach(item => {
+        const key = `${item.name}|${item.rarity}`;
+        if (!itemCounts[key]) {
+          itemCounts[key] = { count: 0, item: item };
+        }
+        itemCounts[key].count++;
+      });
+
+      const fuelItems = Object.values(itemCounts).map(data => ({
+        ...data.item,
+        count: data.count
+      }));
+
+      const sorted = fuelItems.sort((a, b) => {
+        if (b.cps !== a.cps) return b.cps - a.cps;
+        if (rarityOrder[b.rarity] !== rarityOrder[a.rarity]) return rarityOrder[b.rarity] - rarityOrder[a.rarity];
+        return a.name.localeCompare(b.name);
+      });
+
+      sorted.forEach(item => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          ${item.name} ${item.emoji} (${item.rarity}, x${item.count})
+          <div class="description-text">${item.cps} coins/sec</div>
+          <span class="tooltip">${item.description}</span>
+        `;
+        li.className = `${item.rarity}-li`;
+        li.addEventListener('click', () => selectItem(item, li, 'fuel'));
+        if (selectedItem && selectedItem.name === item.name && selectedItem.rarity === item.rarity && selectedSource === 'fuel') {
+          li.classList.add('selected');
+        }
+        list.appendChild(li);
+      });
     }
 
+    function updateChangelog() {
+      const list = document.getElementById("changelogList");
+      list.innerHTML = `
+        <li>Designed by <a onclick="window.open('https://github.com/ElyakProductionsCo', '_blank')">ElyakProductionsCo</a></li>
+      `;
+      changelog.slice().reverse().forEach(entry => {
+        const li = document.createElement("li");
+        li.textContent = `${entry.timestamp}: ${entry.text}`;
+        list.insertBefore(li, list.firstChild.nextSibling);
+      });
+    }
+
+    function addChangelogEntry() {
+      const entry = prompt("Enter changelog entry (max 200 characters):");
+      if (entry && entry.trim() && entry.length <= 200) {
+        const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19);
+        changelog.push({ text: entry.trim(), timestamp });
+        if (changelog.length > 50) {
+          changelog.shift();
+        }
+        updateChangelog();
+        saveGame();
+        alert("Changelog updated!");
+      } else if (entry) {
+        alert("Entry must be non-empty and up to 200 characters!");
+      }
+    }
+
+    function selectItem(item, element, source) {
+  if (selectedItem && selectedItem.name === item.name && selectedItem.rarity === item.rarity && selectedItem.cps === item.cps && selectedSource === source) {
+    selectedItem = null;
+    selectedSource = null;
+    updateInventory();
+    updateForgableList();
+    updateFuelCardList();
+  } else {
+    selectedItem = item;
+    selectedSource = source;
+    if (source === 'forgable') {
+      autoPlaceForgable(item);
+    } else if (source === 'fuel') {
+      autoPlaceFuel(item);
+    } else {
+      updateInventory();
+      updateForgableList();
+      updateFuelCardList();
+    }
+  }
+}
+
+function autoPlaceForgable(item) {
+  const matchingItems = inventory.filter(i => i.name === item.name && i.rarity === item.rarity);
+  if (matchingItems.length < 3) {
+    alert("Not enough matching items in inventory!");
+    selectedItem = null;
+    selectedSource = null;
+    updateInventory();
+    updateForgableList();
+    return;
+  }
+  forgeSlots.forEach((slotItem, i) => {
+    if (slotItem) {
+      inventory.push(slotItem);
+      forgeSlots[i] = null;
+    }
+  });
+  for (let i = 0; i < 3; i++) {
+    forgeSlots[i] = { ...matchingItems[i] };
+  }
+  let removedCount = 0;
+  for (let i = inventory.length - 1; i >= 0 && removedCount < 3; i--) {
+    if (inventory[i].name === item.name && inventory[i].rarity === item.rarity) {
+      inventory.splice(i, 1);
+      removedCount++;
+    }
+  }
+  selectedItem = null;
+  selectedSource = null;
+  updateInventory();
+  updateForgeSlots();
+  updateForgableList();
+  saveGame();
+}
+
+function autoPlaceFuel(item) {
+  if (altarTarget && item.name === altarTarget.name && item.rarity === altarTarget.rarity && item.cps === altarTarget.cps) {
+    alert("Cannot use the target card as a fuel card!");
+    selectedItem = null;
+    selectedSource = null;
+    updateInventory();
+    updateFuelCardList();
+    return;
+  }
+  const matchingItems = inventory.filter(i => i.name === item.name && i.rarity === item.rarity && i.cps === item.cps);
+  if (matchingItems.length < 1) {
+    alert("Not enough matching items in inventory!");
+    selectedItem = null;
+    selectedSource = null;
+    updateInventory();
+    updateFuelCardList();
+    return;
+  }
+  const emptySlotIndex = altarFuel.findIndex(slot => slot === null);
+  if (emptySlotIndex === -1) {
+    alert("All fuel slots are filled!");
+    selectedItem = null;
+    selectedSource = null;
+    updateInventory();
+    updateFuelCardList();
+    return;
+  }
+  altarFuel[emptySlotIndex] = { ...matchingItems[0] };
+  const itemIndex = inventory.findIndex(i => 
+    i.name === item.name && i.rarity === item.rarity && i.cps === item.cps
+  );
+  if (itemIndex !== -1) {
+    inventory.splice(itemIndex, 1);
+  }
+  selectedItem = null;
+  selectedSource = null;
+  updateInventory();
+  updateFuelSlots();
+  updateFuelCardList();
+  saveGame();
+}
+
     function placeItemInSlot(slotIndex) {
-      if (!selectedItem) {
-        alert("Please select an item first!");
+      if (!selectedItem || selectedSource !== 'inventory') {
+        alert("Please select an item from the inventory!");
         return;
       }
       if (equipped[slotIndex]) {
         inventory.push(equipped[slotIndex]);
       }
-      equipped[slotIndex] = selectedItem;
+      equipped[slotIndex] = { ...selectedItem };
       const itemIndex = inventory.indexOf(selectedItem);
       if (itemIndex !== -1) {
         inventory.splice(itemIndex, 1);
       }
       selectedItem = null;
+      selectedSource = null;
       updateInventory();
       updateSlots();
       saveGame();
-    }
-
-    function placeItemInForgeSlot(slotIndex) {
-      if (!selectedItem) {
-        alert("Please select an item first!");
-        return;
-      }
-      if (forgeSlots[slotIndex]) {
-        inventory.push(forgeSlots[slotIndex]);
-      }
-      forgeSlots[slotIndex] = selectedItem;
-      const itemIndex = inventory.indexOf(selectedItem);
-      if (itemIndex !== -1) {
-        inventory.splice(itemIndex, 1);
-      }
-      selectedItem = null;
-      updateInventory();
-      updateForgeSlots();
-      saveGame();
-    }
-
-    function removeFromForgeSlot(slotIndex) {
-      if (forgeSlots[slotIndex]) {
-        inventory.push(forgeSlots[slotIndex]);
-        forgeSlots[slotIndex] = null;
-        updateInventory();
-        updateForgeSlots();
-        saveGame();
-      }
     }
 
     function removeFromEquippedSlot(slotIndex) {
       if (equipped[slotIndex]) {
         inventory.push(equipped[slotIndex]);
         equipped[slotIndex] = null;
+        selectedItem = null;
+        selectedSource = null;
         updateInventory();
         updateSlots();
         saveGame();
       }
     }
 
-    function forgeCards() {
-      if (forgeSlots.some(slot => !slot)) {
-        alert("Please fill all forge slots!");
-        return;
+    function updateSlots() {
+  const slots = document.getElementById("slots");
+  slots.querySelectorAll('.slot').forEach((slot, i) => {
+    const slotContent = slot.querySelector('.slot-content');
+    slotContent.style.background = ''; // Clear inline background
+    if (equipped[i] && equipped[i].rarity && equipped[i].name) {
+      slotContent.innerHTML = `
+        ${equipped[i].name} ${equipped[i].emoji}<br>
+        <span class="description-text">${equipped[i].cps} cps</span>
+        <span class="tooltip">${equipped[i].description}</span>
+      `;
+      slot.className = `slot ${equipped[i].rarity}`;
+      slotContent.className = `slot-content ${equipped[i].rarity}`;
+    } else {
+      slotContent.innerHTML = `Slot ${i + 1}`;
+      slot.className = 'slot';
+      slotContent.className = 'slot-content';
+      slotContent.style.background = 'none';
+    }
+    slot.onclick = () => {
+      if (selectedItem && selectedSource === 'inventory') {
+        placeItemInSlot(i);
+      } else if (equipped[i]) {
+        removeFromEquippedSlot(i);
       }
+    };
+  });
+}
 
-      const cardName = forgeSlots[0].name;
-      if (forgeSlots.some(slot => slot.name !== cardName || slot.rarity === "Special")) {
-        alert("All cards must be identical and not Special rarity!");
-        return;
+function placeItemInForgeSlot(slotIndex) {
+  if (!selectedItem || selectedSource !== 'inventory') {
+    alert("Please select an item from the inventory!");
+    return;
+  }
+  if (forgeSlots[slotIndex]) {
+    inventory.push(forgeSlots[slotIndex]);
+  }
+  forgeSlots[slotIndex] = { ...selectedItem };
+  const itemIndex = inventory.findIndex(item => 
+    item.name === selectedItem.name && item.rarity === selectedItem.rarity && item.cps === selectedItem.cps
+  );
+  if (itemIndex !== -1) {
+    inventory.splice(itemIndex, 1);
+  }
+  selectedItem = null;
+  selectedSource = null;
+  updateInventory();
+  updateForgeSlots();
+  saveGame();
+}
+
+    function removeFromForgeSlot(slotIndex) {
+      if (forgeSlots[slotIndex]) {
+        inventory.push(forgeSlots[slotIndex]);
+        forgeSlots[slotIndex] = null;
+        selectedItem = null;
+        selectedSource = null;
+        updateInventory();
+        updateForgeSlots();
+        saveGame();
       }
-
-      const currentRarity = forgeSlots[0].rarity;
-      const currentRarityIndex = rarityProgression.indexOf(currentRarity);
-      if (currentRarityIndex === -1 || currentRarityIndex >= rarityProgression.length - 1) {
-        alert("Cannot forge this rarity!");
-        return;
-      }
-
-      const newRarity = rarityProgression[currentRarityIndex + 1];
-      const newCard = {
-        ...forgeSlots[0],
-        rarity: newRarity,
-        cps: forgeSlots[0].cps * 4
-      };
-
-      inventory.push(newCard);
-      forgeSlots.fill(null);
-      updateForgeSlots();
-      updateInventory(newCard.name);
-      saveGame();
     }
 
     function updateForgeSlots() {
-      const forgeSlotEls = document.querySelectorAll(".forge-slot");
-      forgeSlotEls.forEach((slot, i) => {
-        if (forgeSlots[i]) {
-          slot.innerHTML = `
-            ${forgeSlots[i].name} ${forgeSlots[i].emoji}
-            <div class="description-text">${forgeSlots[i].cps}/sec</div>
-            <span class="tooltip">${forgeSlots[i].description}</span>
-          `;
-          slot.style.background = getRarityColor(forgeSlots[i].rarity, 0.3);
-          slot.onclick = () => removeFromForgeSlot(i);
-        } else {
-          slot.innerHTML = `Forge Slot ${i + 1}`;
-          slot.style.background = "rgba(255,255,255,0.05)";
-          slot.onclick = () => placeItemInForgeSlot(i);
-        }
-      });
-    }
-
-    function updateSlots() {
-      const slotEls = document.querySelectorAll(".slot");
-      equipped.forEach((item, i) => {
-        if (i < slotEls.length) {
-          const slotContent = slotEls[i].querySelector('.slot-content');
-          if (slotContent) {
-            if (item) {
-              slotContent.innerHTML = `
-                ${item.name} ${item.emoji}
-                <div class="description-text">${item.cps}/sec</div>
-                <span class="tooltip">${item.description}</span>
-              `;
-              slotEls[i].style.background = getRarityColor(item.rarity, 0.3);
-              slotEls[i].onclick = () => removeFromEquippedSlot(i);
-            } else {
-              slotContent.innerHTML = `Slot ${i + 1}`;
-              slotEls[i].style.background = "rgba(255,255,255,0.05)";
-              slotEls[i].onclick = () => placeItemInSlot(i);
-            }
-          }
-        }
-      });
-    }
-
-    function getRarityColor(rarity, opacity) {
-      const colors = {
-        Common: "189, 195, 199",
-        Uncommon: "46, 204, 113",
-        Rare: "52, 152, 219",
-        SuperRare: "230, 126, 34",
-        Epic: "155, 89, 182",
-        Legendary: "241, 196, 15",
-        Mythical: "255, 105, 180",
-        Celestial: "0, 247, 255",
-        Special: "220, 20, 60"
-      };
-      return `rgba(${colors[rarity]}, ${opacity})`;
-    }
-
-    function updateSpinButton() {
-      document.querySelector('.spin-button').innerHTML = `Spin (Cost: <span id="spinCost">${spinCost}</span> Coins)`;
-      document.getElementById("coinCounter").textContent = coins;
-    }
-
-    function redeemCode() {
-      const codeInput = document.getElementById('codeInput');
-      const inputCode = codeInput.value.trim();
-      const validCodes = {
-        'a2V5YnVnMDI=': 'debug',
-        'Y29kZVByb01j': 'mcgonagall'
-      };
-      let decodedCode = '';
-      try {
-        decodedCode = atob(inputCode);
-      } catch (e) {
-        decodedCode = inputCode;
-      }
-      const codeAction = validCodes[btoa(inputCode)] || validCodes[inputCode];
-
-      if (codeAction === 'debug') {
-        console.log('Debug Mode: Current Game State');
-        console.log('Inventory:', inventory);
-        console.log('Equipped:', equipped);
-        console.log('Forge Slots:', forgeSlots);
-        alert('Debug mode activated (check console).');
-      } else if (codeAction === 'mcgonagall') {
-        if (redeemedCodes.has(inputCode)) {
-          alert('This code has already been redeemed!');
-          return;
-        }
-        const mcgonagall = items.find(item => item.name === 'Professor McGonagall');
-        inventory.push({ ...mcgonagall });
-        redeemedCodes.add(inputCode);
+  const slots = document.querySelectorAll('.forge-slot');
+  slots.forEach((slot, i) => {
+    slot.innerHTML = forgeSlots[i] ? `${forgeSlots[i].name} ${forgeSlots[i].emoji} (${forgeSlots[i].rarity})` : '';
+    slot.className = `forge-slot ${forgeSlots[i] ? forgeSlots[i].rarity : ''}`;
+    slot.onclick = () => {
+      if (forgeSlots[i]) {
+        inventory.push(forgeSlots[i]);
+        forgeSlots[i] = null;
         updateInventory();
-        showSpecialMessage(mcgonagall);
-        alert('Code redeemed! Professor McGonagall added to inventory.');
+        updateForgeSlots();
         saveGame();
       } else {
-        alert('Invalid code!');
+        placeItemInForgeSlot(i);
       }
-      codeInput.value = '';
+    };
+  });
+}
+
+    function forgeCards() {
+      if (forgeSlots.some(slot => !slot)) {
+        alert("Please fill all 3 forge slots!");
+        return;
+      }
+
+      const allSame = forgeSlots.every((slot, i, arr) => 
+        slot.name === arr[0].name && slot.rarity === arr[0].rarity
+      );
+
+      if (!allSame) {
+        alert("All forge slots must contain the same item (name and rarity)!");
+        return;
+      }
+
+      const baseItem = forgeSlots[0];
+      if (baseItem.rarity === "Special") {
+        alert("Special items cannot be forged!");
+        return;
+      }
+
+      const currentRarityIndex = rarityProgression.indexOf(baseItem.rarity);
+      let newRarity = baseItem.rarity;
+
+      if (currentRarityIndex < rarityProgression.length - 1) {
+        newRarity = rarityProgression[currentRarityIndex + 1];
+      }
+
+      const newItem = {
+        ...baseItem,
+        rarity: newRarity,
+        cps: Math.floor(baseItem.cps * 4)
+      };
+
+      inventory.push(newItem);
+      forgeSlots.fill(null);
+      selectedItem = null;
+      selectedSource = null;
+      updateInventory(newItem);
+      updateForgeSlots();
+      saveGame();
     }
 
-    setInterval(() => {
-      let totalCPS = 0;
-      equipped.forEach(item => {
-        if (item) {
-          coins += item.cps;
-          totalCPS += item.cps;
-        }
-      });
-      if (totalCPS > 0) {
-        const coinCounter = document.querySelector('.coin-counter');
-        coinCounter.classList.add('sparkle');
-        setTimeout(() => coinCounter.classList.remove('sparkle'), 500);
-      }
-      updateSpinButton();
-      saveGame();
-    }, 1000);
+    function placeItemInAltarTarget() {
+  if (!selectedItem || selectedSource !== 'inventory') {
+    alert("Please select a target card from the inventory!");
+    return;
+  }
+  if (altarTarget) {
+    inventory.push(altarTarget);
+  }
+  altarTarget = { ...selectedItem };
+  const itemIndex = inventory.findIndex(item => 
+    item.name === selectedItem.name && 
+    item.rarity === selectedItem.rarity && 
+    item.cps === selectedItem.cps
+  );
+  if (itemIndex !== -1) {
+    inventory.splice(itemIndex, 1);
+  }
+  selectedItem = null;
+  selectedSource = null;
+  updateInventory();
+  updateAltarTarget();
+  updateFuelCardList();
+  saveGame();
+}
 
-    updateInventory();
+    function removeFromAltarTarget() {
+      if (altarTarget) {
+        inventory.push(altarTarget);
+        altarTarget = null;
+        selectedItem = null;
+        selectedSource = null;
+        updateInventory();
+        updateAltarTarget();
+        saveGame();
+      }
+    }
+
+    function updateAltarTarget() {
+  const targetSlot = document.getElementById("altarTarget");
+  targetSlot.style.background = ''; // Clear inline background
+  if (altarTarget && altarTarget.rarity && altarTarget.name) {
+    targetSlot.innerHTML = `
+      ${altarTarget.name} ${altarTarget.emoji}
+      <div class="description-text">${altarTarget.cps} cps</div>
+      <span class="tooltip">${altarTarget.description}</span>
+    `;
+    targetSlot.className = `target-slot ${altarTarget.rarity}`;
+  } else {
+    targetSlot.innerHTML = `Target Slot`;
+    targetSlot.className = 'target-slot';
+    targetSlot.style.background = 'rgba(255,255,255,0.05)';
+  }
+  targetSlot.onclick = () => {
+    if (selectedItem && selectedSource === 'inventory') {
+      placeItemInAltarTarget();
+    } else if (altarTarget) {
+      removeFromAltarTarget();
+    }
+  };
+}
+
+function placeItemInFuelSlot(slotIndex) {
+  if (!selectedItem || selectedSource !== 'inventory') {
+    alert("Please select a fuel card from the inventory!");
+    return;
+  }
+  if (altarTarget && selectedItem.name === altarTarget.name && selectedItem.rarity === altarTarget.rarity && selectedItem.cps === altarTarget.cps) {
+    alert("Cannot use the target card as a fuel card!");
+    return;
+  }
+  if (altarFuel[slotIndex]) {
+    inventory.push(altarFuel[slotIndex]);
+  }
+  altarFuel[slotIndex] = { ...selectedItem };
+  const itemIndex = inventory.findIndex(item => 
+    item.name === selectedItem.name && item.rarity === selectedItem.rarity && item.cps === selectedItem.cps
+  );
+  if (itemIndex !== -1) {
+    inventory.splice(itemIndex, 1);
+  }
+  selectedItem = null;
+  selectedSource = null;
+  updateInventory();
+  updateFuelSlots();
+  updateFuelCardList();
+  saveGame();
+}
+
+    function removeFromFuelSlot(slotIndex) {
+      if (altarFuel[slotIndex]) {
+        inventory.push(altarFuel[slotIndex]);
+        altarFuel[slotIndex] = null;
+        selectedItem = null;
+        selectedSource = null;
+        updateInventory();
+        updateFuelSlots();
+        saveGame();
+      }
+    }
+
+    function updateFuelSlots() {
+  const slots = document.querySelectorAll('.fuel-slot');
+  slots.forEach((slot, i) => {
+    slot.innerHTML = altarFuel[i] ? `${altarFuel[i].name} ${altarFuel[i].emoji} (${altarFuel[i].rarity}) ${altarFuel[i].cps} CPS` : '';
+    slot.className = `fuel-slot ${altarFuel[i] ? altarFuel[i].rarity : ''}`;
+    slot.onclick = () => {
+      if (altarFuel[i]) {
+        inventory.push(altarFuel[i]);
+        altarFuel[i] = null;
+        updateInventory();
+        updateFuelSlots();
+        updateFuelCardList();
+        saveGame();
+      } else {
+        placeItemInFuelSlot(i);
+      }
+    };
+  });
+}
+
+function batchSelectFuelCards() {
+  const raritySelect = document.getElementById('batchRarity').value;
+  const cpsInput = document.getElementById('batchCPS').value;
+  const cpsValue = cpsInput ? parseInt(cpsInput) : null;
+
+  if (!raritySelect && (!cpsValue || isNaN(cpsValue) || cpsValue < 0 || cpsValue > 1000)) {
+    alert("Please select a rarity or enter a valid CPS (0 to 1000)!");
+    document.getElementById('batchCPS').focus();
+    return;
+  }
+
+  if (inventory.length === 0) {
+    alert("Inventory is empty! Add items to use batch selection.");
+    updateFuelSlots();
+    updateFuelCardList();
+    saveGame();
+    return;
+  }
+
+  // Clear existing fuel slots
+  altarFuel.forEach((slotItem, i) => {
+    if (slotItem) {
+      inventory.push(slotItem);
+      altarFuel[i] = null;
+    }
+  });
+
+  // Filter inventory for matching items
+  let matchingItems = inventory.filter(item => {
+    const matchesRarity = raritySelect ? item.rarity === raritySelect : true;
+    const matchesCPS = cpsValue !== null ? item.cps === cpsValue : true;
+    const notTarget = !altarTarget || 
+      (item.name !== altarTarget.name || item.rarity !== altarTarget.rarity || item.cps !== altarTarget.cps);
+    return matchesRarity && matchesCPS && notTarget;
+  });
+
+  if (matchingItems.length === 0) {
+    alert("No items match the selected criteria!");
+    updateFuelSlots();
+    updateFuelCardList();
+    saveGame();
+    return;
+  }
+
+  // Sort by CPS descending
+  matchingItems.sort((a, b) => b.cps - a.cps);
+
+  // Fill up to 5 fuel slots
+  const fillCount = Math.min(matchingItems.length, altarFuel.length);
+  for (let i = 0; i < fillCount; i++) {
+    altarFuel[i] = { ...matchingItems[i] };
+  }
+
+  // Remove selected items from inventory
+  for (let i = 0; i < fillCount; i++) {
+    const itemIndex = inventory.findIndex(item => 
+      item.name === matchingItems[i].name && 
+      item.rarity === matchingItems[i].rarity && 
+      item.cps === matchingItems[i].cps
+    );
+    if (itemIndex !== -1) {
+      inventory.splice(itemIndex, 1);
+    }
+  }
+
+  updateInventory();
+  updateFuelSlots();
+  updateFuelCardList();
+  saveGame();
+}
+
+function upgradeCard() {
+  if (!altarTarget) {
+    alert("Please place a target card in the altar!");
+    return;
+  }
+
+  const filledFuelSlots = altarFuel.filter(slot => slot !== null);
+  if (filledFuelSlots.length < 3) {
+    alert("Please place at least 3 fuel cards!");
+    return;
+  }
+
+  const totalFuelCPS = filledFuelSlots.reduce((sum, item) => sum + item.cps, 0);
+  const cpsIncrease = Math.floor(totalFuelCPS * 0.5);
+  const newCPS = Math.min(altarTarget.cps + cpsIncrease, 1000);
+  altarTarget.cps = newCPS;
+
+  inventory.push({ ...altarTarget });
+  altarTarget = null;
+  altarFuel.fill(null);
+
+  selectedItem = null;
+  selectedSource = null;
+  updateInventory();
+  updateAltarTarget();
+  updateFuelSlots();
+  updateFuelCardList();
+  saveGame();
+  alert(`Card upgraded! New CPS: ${newCPS}`);
+}
+
+function redeemCode() {
+  const codeInput = document.getElementById('codeInput');
+  const code = codeInput.value.trim();
+  const encodedCode = btoa(code);
+
+  if (redeemedCodes.has(encodedCode)) {
+    alert('This code has already been redeemed!');
+    return;
+  }
+
+  if (code === 'imabeggar') {
+    coins += 100;
+    spinCost = 10;
+    redeemedCodes.add(encodedCode);
     updateSpinButton();
-    updateForgeSlots();
-    updateSlots();
-  </script>
-</body>
-</html>
+    saveGame();
+    alert('Code redeemed! + 1000 coins, spin cost reset.');
+  } else if (code === 'ilovehomework') {
+    const mcgonagall = items.find(item => item.name === "Professor McGonagall");
+    if (mcgonagall) {
+      inventory.push({ ...mcgonagall });
+      redeemedCodes.add(encodedCode);
+      updateInventory();
+      showSpecialMessage(mcgonagall);
+      saveGame();
+      alert('Code redeemed! Professor McGonagall added to inventory.');
+    }
+  } else if (code == 'Ella') {
+    const ella = items.find(item => item.name === "Ella");
+    if (ella) {
+      inventory.push({...ella});
+      redeemedCodes.add(encodedCode);
+      updateInventory();
+      showSpecialMessage(ella);
+      saveGame();
+      alert('Code redeemed! Ella added to inventory.');
+    }
+  } else if (code == 'Nirvi') {
+    const nirvi = items.find(item => item.name === "Nirvi");
+    if (nirvi) {
+      inventory.push({...nirvi});
+      redeemedCodes.add(encodedCode);
+      updateInventory();
+      showSpecialMessage(nirvi);
+      saveGame();
+      alert('Code redeemed! Nirvi added to inventory.');
+    }
+  } else if (code == 'Idiot') {
+    const idiot = items.find(item => item.name === "Matthew Tan");
+    if (idiot) {
+      inventory.push({...idiot});
+      redeemedCodes.add(encodedCode);
+      updateInventory();
+      showSpecialMessage(idiot);
+      saveGame();
+      alert('Code redeemed! Matthew Tan added to inventory.');
+    }
+  } else if (code === 'keybug02') {
+    addChangelogEntry();
+    redeemedCodes.add(encodedCode);
+    alert('-welcome, developer-');
+  } else {
+    alert('Invalid code!');
+  }
+
+  codeInput.value = '';
+}
+</script>
