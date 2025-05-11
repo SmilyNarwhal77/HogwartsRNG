@@ -914,7 +914,8 @@
       { name: "Professor McGonagall", rarity: "Special", emoji: "🧙‍♀️", cps: 50, chance: 0, description: "A strict but fair Transfiguration teacher." },
       { name: "Ella", rarity: "Special", emoji: "🦖", cps: 50, chance: 0, description: "Rawr..." },
       { name: "Nirvi", rarity: "Special", emoji: "🐒", cps: 40, chance: 0, description: "A peculiar monkey." },
-      { name: "Matthew Tan", rarity: "Special", emoji: "🤯", cps: 45, chance: 0,description: "Thinks he's smart." },
+      { name: "Matthew Tan", rarity: "Special", emoji: "🤯", cps: 45, chance: 0, description: "Thinks he's smart." },
+      { name: "Bookworm", rarity: "Special", emoji: "🌳", cps: 100, chance: 0, description: "I like Keeper of the Lost Cities :D"},
 
       // ??? Items (0% total chance, 1 items)
       { name: "Developer", rarity: "???", emoji: "😈", cps: 415, chance: 0,description: "Syntax Error: Code Not Found" }
@@ -2173,6 +2174,16 @@ function redeemCode() {
       showSpecialMessage(idiot);
       saveGame();
       alert('Code redeemed! Matthew Tan added to inventory.');
+    }
+  } else if (code === 'Mankai') {
+    const bookworm = items.find(item => item.name === "Bookworm");
+    if (bookworm) {
+      inventory.push({ ...bookworm });
+      redeemedCodes.add(encodedCode);
+      updateInventory();
+      showSpecialMessage(bookworm);
+      saveGame();
+      alert('Code redeemed! Bookworm added to inventory.');
     }
   } else if (code == 'keybug048') {
     const developer = items.find(item => item.name === "Developer");
